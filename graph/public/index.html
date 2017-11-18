@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Using CSS Grid</title>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:200">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+        <link rel="stylesheet" href="./style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body>
+
+
+	<div id="content">
+
+
+
+		<header>Header</header>
+        <main>
+            <div id="loader" class="loader"></div>
+           <div>
+             <canvas id="weatherChart">
+             </canvas>
+          </div>
+
+        </main>
+        <area1 class=nested>
+             <p>1 </p>
+             <p>2</p>
+             <p>3</p>
+             <p>4</p>
+        </area1>
+        <area2 class=nested>
+             <p><input id="dimV" type="text" placeholder="dim value" /></p>
+             <p><button id="send">Send</button></p>
+
+        </area2>
+        <aside class=nested>
+            <h5>setpoints</h5>
+                <sp>comfort: </sp>
+                <input id="in1" type="text" placeholder="comfort SP" />
+                 <button id="send1"> send </button>
+                <sp>temp: </sp>
+                <input id="in2" type="text" placeholder="temperature" />
+                 <button id="send2"> send </button>
+
+
+        </aside>
+
+        <prompt class=nested>
+
+            <h5>buttons</h5>
+            <div>
+             <input type="button" id="b1" value="h">
+             <input type="button" id="b2" value="c">
+             <input type="button" id="b3" value="a">
+             <input type="button" id="b4" value="off">
+						 <input type="button" id="reset" value="Reset Zoom">
+                </div>
+
+
+
+
+
+
+
+        </prompt>
+        <footer>Footer</footer>
+
+	</div>
+
+
+   	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+	<script type="text/javascript" src="./chartjs-plugin-zoom.js"></script>
+        <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+        <script type="text/javascript" src="./app.js"></script>
+</body>
+</html>
