@@ -28,7 +28,10 @@ var londonTempData = {
     city: 'London',
     unit: 'celsius',
     dataPoints: [
-      {temperature: 23, time: ' 7:36:57 '}
+
+    ],
+    piController: [
+
     ]
   };
 
@@ -102,7 +105,7 @@ app.get('/addTemperature1', function(req,res){
 //-------------------------------//
 //update graph through server KNX//
 //-------------------------------//
-
+// setpoint data
 logKNX.on('dim', function(data){
   var temp = parseFloat(data.value).toFixed(2);
 //  var time = parseInt(req.query.time);  parseFloat(yourString).toFixed(2)
@@ -115,9 +118,31 @@ logKNX.on('dim', function(data){
 
   console.log(newDataPoint);
 
-  londonTempData.dataPoints.push(newDataPoint);         //ad new datapoint to array
+  //store londonTempData.dataPoints.push(newDataPoint);         //ad new datapoint to array
+
   //trigger event event and send newDataPoint
   pusher.trigger('london-temp-chart', 'new-temperature', {
+    dataPoint: newDataPoint
+  });
+});
+
+//PI controller data
+logKNX.on('PI', function(data){
+  var temp = parseFloat(data.value).toFixed(2);
+//  var time = parseInt(req.query.time);  parseFloat(yourString).toFixed(2)
+
+  var newDataPoint = {
+    temperature: temp,
+//      time: time
+    time: moment().format(' h:mm:ss ')
+  };
+
+  console.log(newDataPoint);
+
+  //store londonTempData.piController.push(newDataPoint);         //ad new datapoint to array
+
+  //trigger event event and send newDataPoint
+  pusher.trigger('london-temp-chart', 'new-temperature1', {
     dataPoint: newDataPoint
   });
 });

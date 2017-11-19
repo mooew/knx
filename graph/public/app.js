@@ -1,6 +1,6 @@
 // Using IIFE for Implementing Module Pattern to keep the Local Space for the JS Variables
 (function() {
-  var socket = io.connect('http://192.168.2.220:9000');
+  var socket = io.connect('http://192.168.2.231:9000');
 
 
   // Query DOM
@@ -147,6 +147,9 @@
                   }
                 }, ],
                 yAxes: [{
+                  //y-as 1
+                  position: "left",
+                  id: "y-axis-1",
                   scaleLabel: {
                     display: true,
                     labelString: 'value'
@@ -155,7 +158,24 @@
                     suggestedMin: 10,
                     suggestedMax: 30
                 }
-                }]
+              },{
+                //y-as 2
+                position: "right",
+                id: "y-axis-2",
+                // grid line settings
+                gridLines: {
+                    drawOnChartArea: false, // only want the grid lines for one axis to show up
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: 'value'
+                },
+                ticks: {
+                  suggestedMin: 0,
+                  suggestedMax: 100
+              }
+
+              }]
               },
         // Container for pan options
         pan: {
@@ -195,7 +215,7 @@
         labels: [],                   //x-axes
         datasets: [
             {
-                label: "grafiek 1",
+                label: "setpoint",
                 fill: false,
                 lineTension: 0,
                 backgroundColor: "rgba(75,192,192,0.4)",
@@ -216,11 +236,12 @@
                 data: [],           //y-axes
                 spanGaps: true,
                 steppedLine: true,
+                yAxisID: "y-axis-1",
 
 
             },
             {
-                label: "grafiek 2",
+                label: "PI",
                 fill: false,
                 lineTension: 0,
                 backgroundColor: "rgba(75,75,192,0.4)",
@@ -241,6 +262,7 @@
                 data: [],         //here comes the data
                 spanGaps: true,
                 steppedLine: true,
+                yAxisID: "y-axis-2",
 
             },
 
@@ -253,9 +275,9 @@
   function onFetchTempSuccess(response){      //callback function after ajax get wit JSON data
     hideEle("loader");  //hide loading status
     var respData = JSON.parse(response);
-//   chartConfig.labels = respData.dataPoints.map(dataPoint => dataPoint.time);
-//   chartConfig.datasets[0].data = respData.dataPoints.map(dataPoint => dataPoint.temperature);
-//   chartConfig.datasets[1].data = respData.dataPoints.map(dataPoint => dataPoint.temperature);
+   //store chartConfig.labels = respData.dataPoints.map(dataPoint => dataPoint.time);
+   //store chartConfig.datasets[0].data = respData.dataPoints.map(dataPoint => dataPoint.temperature);
+   //store chartConfig.datasets[1].data = respData.dataPoints.map(dataPoint => dataPoint.temperature);
 //comment because after refresh data is mixed
 //now after refresh everything is gone
 
