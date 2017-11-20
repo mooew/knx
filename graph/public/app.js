@@ -287,6 +287,8 @@
 
   channel = pusher.subscribe('london-temp-chart');
   //action on new event!?
+
+/*
   channel.bind('new-temperature', function(data) {
     var newTempData = data.dataPoint;
     //console.log(data);
@@ -297,7 +299,7 @@
       weatherChartRef.data.datasets[0].data.shift();
       weatherChartRef.data.datasets[1].data.shift();
     }
-    */
+
     console.log('update');
     while(weatherChartRef.data.datasets[0].data.length < weatherChartRef.data.labels.length){
     weatherChartRef.data.datasets[0].data.push(null);
@@ -310,6 +312,7 @@
 
   channel.bind('new-temperature1', function(data) {
     var newTempData = data.dataPoint;
+    // if lot sof data scroll the chart
     //console.log(data);
     //alert('An event was triggered with message: ' + data.dataPoint);
     /*
@@ -317,7 +320,7 @@
       weatherChartRef.data.labels.shift();
       weatherChartRef.data.datasets[1].data.shift();
     }
-    */
+
     console.log('update');
     while(weatherChartRef.data.datasets[1].data.length < weatherChartRef.data.labels.length){
     weatherChartRef.data.datasets[1].data.push(null);
@@ -326,8 +329,16 @@
     weatherChartRef.data.datasets[1].data.push(newTempData.temperature);
     weatherChartRef.update();
   });
-
-
+*/
+  channel.bind('new-data', function(data) {
+    console.log(data);
+    var newTempData = data.dataPoint;
+    console.log('new data is received');
+    weatherChartRef.data.labels.push(newTempData.time);
+    weatherChartRef.data.datasets[0].data.push(newTempData.sp);
+    weatherChartRef.data.datasets[1].data.push(newTempData.pi);
+    weatherChartRef.update();
+  });
 
 
 /* TEMP CODE FOR TESTING */
