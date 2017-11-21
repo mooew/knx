@@ -1,7 +1,7 @@
 // Using IIFE for Implementing Module Pattern to keep the Local Space for the JS Variables
 (function() {
+  //var socket = io.connect('http://192.168.2.231:9000');
   var socket = io.connect('http://192.168.2.220:9000');
-
 
   // Query DOM
   var   dim = document.getElementById('dimV'),
@@ -37,14 +37,14 @@
 
         send_1.addEventListener('click', function(){
           console.log('button pressed');
-          socket.emit('input', {
+          socket.emit('input_comf', {
               inp: input_1.value
           });
           });
 
           send_2.addEventListener('click', function(){
             console.log('button pressed');
-            socket.emit('input', {
+            socket.emit('input_temp', {
                 inp: input_2.value
             });
 
@@ -241,6 +241,32 @@
 
             },
             {
+                label: "temperature",
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "rgba(200,192,200,0.4)",
+                borderColor: "rgba(200,192,200,1)",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "rgba(200,192,200,1)",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBorderWidth: 2,
+                pointRadius: 3,
+                pointHitRadius: 10,
+                data: [],           //y-axes
+                spanGaps: true,
+                steppedLine: true,
+                yAxisID: "y-axis-1",
+
+
+            },
+            {
                 label: "PI",
                 fill: false,
                 lineTension: 0,
@@ -336,7 +362,8 @@
     console.log('new data is received');
     weatherChartRef.data.labels.push(newTempData.time);
     weatherChartRef.data.datasets[0].data.push(newTempData.sp);
-    weatherChartRef.data.datasets[1].data.push(newTempData.pi);
+    weatherChartRef.data.datasets[1].data.push(newTempData.temp);
+    weatherChartRef.data.datasets[2].data.push(newTempData.pi);
     weatherChartRef.update();
   });
 

@@ -24,9 +24,8 @@ var pusher = new Pusher({
 // SP can come from KNX and functions and DOM
 // TT comes from function or DOM
 var pi = null,
-    temperature = null,
     sp = null,
-    temp = null;
+    temp = null,
     time = null;
 
 //App setup
@@ -64,7 +63,7 @@ app.get('/addTemperature', function(req,res){
 
 
     var newDataPoint = {
-      temperature: temp,
+      temp: temp,
 //      time: time
       time: moment().format(' h:mm:ss ')
     };
@@ -95,7 +94,7 @@ app.get('/addTemperature1', function(req,res){
 
 
     var newDataPoint = {
-      temperature: temp,
+      temp: temp,
 //      time: time
       time: moment().format(' h:mm:ss ')
     };
@@ -134,9 +133,11 @@ knx.on('bus_event', function(data){
      //sp = data.value;
      time = data.time;
 
+
     var newDataPoint = {
-      temperature: temp,
-      time: time,
+      temp: temp,
+      //time: time,
+      time: moment().format(' h:mm:ss '),
       pi: pi,
       sp: sp
       //time: moment().format(' h:mm:ss ')
@@ -153,8 +154,9 @@ knx.on('bus_event', function(data){
      time = data.time;
 
     var newDataPoint = {
-      temperature: temp,
-      time: time,
+      temp: temp,
+    //  time: time,
+      time: moment().format(' h:mm:ss '),
       pi: pi,
       sp: sp
       //time: moment().format(' h:mm:ss ')
@@ -169,7 +171,6 @@ console.log(londonTempData);
 
 
 
-londonTempData = newDataPoint;
 });
 
 
@@ -254,10 +255,30 @@ io.on('connection', (socket) => {
     });
 
 //----used for input fields----//
-    socket.on('input', function(data){
+    socket.on('input_comf', function(data){
         var inp = parseInt(data.inp);
-        console.log(inp);
-//        WriteToBus('0/0/6','DPT5',dim);                                              KNX off
+        console.log('temp: ' + inp);
+//        WriteToBus('0/3/3','DPT5',inp);                                              KNX off
+  });
+socket.on('input_temp', function(data){
+    var temp = parseInt(data.inp);
+    console.log('sp: ' +  temp);
+//        WriteToBus('0/3/0','DPT5',inp);
+
+  //update graph
+
+  var newDataPoint = {
+    temp: temp,
+    time: moment().format(' h:mm:ss '),
+    pi: pi,
+    sp: sp
+    //time: moment().format(' h:mm:ss ')
+
+  }
+  console.log(newDataPoint);
+  pusher.trigger('london-temp-chart', 'new-data', {
+    dataPoint: newDataPoint
+});
 
     });
 //----used for button presses----//
