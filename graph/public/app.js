@@ -1,6 +1,6 @@
 // Using IIFE for Implementing Module Pattern to keep the Local Space for the JS Variables
 (function() {
-  var socket = io.connect('http://192.168.2.231:9000');
+  var socket = io.connect('http://192.168.2.220:9000');
 
 
   // Query DOM
