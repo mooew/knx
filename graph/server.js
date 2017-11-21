@@ -118,17 +118,20 @@ app.get('/addTemperature1', function(req,res){
 //update graph through server KNX//
 //{'source': src, 'destination': dest,
 //  'type': dpt, 'value': val, 'time':date };
-//destination:  1/0/0 => setpoint
-//              2/0/0 => pi
+//destination:  0/3/1 => setpoint
+//              0/3/0 => pi
 //-------------------------------//
 
 knx.on('bus_event', function(data){
   //console.log('good job');
   //console.log(data);
-  if(data.destination == '0/0/1'){
-    console.log('001')
-    //var sp = parseFloat(data.value).toFixed(2);
-     sp = data.value;
+  if(data.destination == '0/3/2'){
+    console.log(data)
+     console.log('sp')
+	console.log(data.value)
+     sp = parseFloat(data.value).toFixed(2);
+
+     //sp = data.value;
      time = data.time;
 
     var newDataPoint = {
@@ -138,8 +141,12 @@ knx.on('bus_event', function(data){
       sp: sp
       //time: moment().format(' h:mm:ss ')
     };
+    console.log(newDataPoint);
+    pusher.trigger('london-temp-chart', 'new-data', {
+      dataPoint: newDataPoint
+  });
 
-  }else if(data.destination == '0/0/2'){
+  }else if(data.destination == '0/3/8'){
 
     //var pi = parseFloat(data.value).toFixed(1);
       pi = data.value;
@@ -153,14 +160,15 @@ knx.on('bus_event', function(data){
       //time: moment().format(' h:mm:ss ')
 
     }
-console.log(londonTempData);
-  }
-
-  console.log(newDataPoint);
-  pusher.trigger('london-temp-chart', 'new-data', {
-    dataPoint: newDataPoint
-
+    console.log(newDataPoint);
+    pusher.trigger('london-temp-chart', 'new-data', {
+      dataPoint: newDataPoint
   });
+console.log(londonTempData);
+  }else {console.log('unknown source haha')}
+
+
+
 londonTempData = newDataPoint;
 });
 

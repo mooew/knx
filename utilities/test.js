@@ -23,7 +23,7 @@ knx.on('bus_event', function(data){
 		//ReadFromBus("0/0/6", "DPT9");
 
 		//pusher
-		log_emitter.emit('dim', data);
+		//log_emitter.emit('dim', data);
 
 
 		}
