@@ -6,9 +6,12 @@ var bodyParser = require('body-parser');
 var moment = require('moment');
 var Pusher = require('pusher');
 var timer = require('./functions').timer;
+var timerTemp = require('./functionTemp').timer;
 var knx = require('./functions').log_event;
 var logKNX = require('../utilities/test').log_event;
 var WriteToBus  = require('../knx_eibd').WriteToBus;
+
+
 var pusher = new Pusher({
     appId: '426105',
     key: '95be360cf53aab13f769',
@@ -44,7 +47,7 @@ var londonTempData = {
     ]
   };
 
-
+var wietse = {};
 //API//
 app.get('/getTemperature', function(req,res){
   res.send(londonTempData);
@@ -135,11 +138,11 @@ knx.on('bus_event', function(data){
       sp: sp
       //time: moment().format(' h:mm:ss ')
     };
-    console.log(newDataPoint);
+
   }else if(data.destination == '0/0/2'){
 
     //var pi = parseFloat(data.value).toFixed(1);
-     pi = data.value;
+      pi = data.value;
      time = data.time;
 
     var newDataPoint = {
@@ -150,23 +153,22 @@ knx.on('bus_event', function(data){
       //time: moment().format(' h:mm:ss ')
 
     }
-    console.log(newDataPoint);
-
+console.log(londonTempData);
   }
 
-  console.log('good job 2');
+  console.log(newDataPoint);
   pusher.trigger('london-temp-chart', 'new-data', {
     dataPoint: newDataPoint
 
   });
-
+londonTempData = newDataPoint;
 });
 
 
 // setpoint data SP
 
 
-    //*
+    /*
 
 logKNX.on('dim', function(data){
   var temp = parseFloat(data.value).toFixed(2);
@@ -209,7 +211,7 @@ logKNX.on('PI', function(data){
   });
 });
 
-        // */
+         */
 
 
 
@@ -261,12 +263,13 @@ io.on('connection', (socket) => {
         }
         else if (mode === 2) {
           timer.stop();
+        }
+        else if(mode === 3){
+          console.log('start timer');
+          timerTemp.start(pi);
         };
 //        WriteToBus('0/0/6','DPT5',dim);                                                KNX off
 
     });
 
 });
-
-
-module.exports.londonTempData = londonTempData;
