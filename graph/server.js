@@ -6,11 +6,11 @@ var bodyParser = require('body-parser');
 var moment = require('moment');
 var Pusher = require('pusher');
 var timer = require('./functions').timer;
-var timerTemp = require('./functionTemp').timer;
+var functionTemp = require('./functionTemp');
 var knx = require('./functions').log_event;
 var logKNX = require('../utilities/test').log_event;
 var WriteToBus  = require('../knx_eibd').WriteToBus;
-
+//var m = require('./functionTemp');
 
 var pusher = new Pusher({
     appId: '426105',
@@ -23,11 +23,10 @@ var pusher = new Pusher({
 // PI always come from knx
 // SP can come from KNX and functions and DOM
 // TT comes from function or DOM
-var pi = null,
-    sp = null,
-    temp = null,
+var sp = 22,
+    temp = 17,
     time = null;
-
+var pi = functionTemp.pi;
 //App setup
 var app = express();
 
@@ -46,7 +45,7 @@ var londonTempData = {
     ]
   };
 
-var wietse = {};
+
 //API//
 app.get('/getTemperature', function(req,res){
   res.send(londonTempData);
@@ -172,7 +171,24 @@ console.log(londonTempData);
 
 
 });
+// functions
+functionTemp.func.on('deltatemp', function(data){
+  console.log('deltatemp ontvangen: ' + data)
+temp = temp + data.controller;
+  var newDataPoint = {
+    temp: temp,
+  //  time: time,
+    time: moment().format(' h:mm:ss '),
+    pi: pi,
+    sp: sp
+    //time: moment().format(' h:mm:ss ')
+}
+pusher.trigger('london-temp-chart', 'new-data', {
+  dataPoint: newDataPoint
+});
 
+
+});
 
 // setpoint data SP
 
@@ -258,15 +274,15 @@ io.on('connection', (socket) => {
     socket.on('input_comf', function(data){
         var inp = parseInt(data.inp);
         console.log('temp: ' + inp);
-        WriteToBus('0/3/3','DPT9',inp);                                             
+        //tempo WriteToBus('0/3/3','DPT9',inp);
   });
 socket.on('input_temp', function(data){
      temp = parseInt(data.inp);
     console.log('sp: ' +  temp);
-        WriteToBus('0/3/0','DPT9',temp);
+        //tempo WriteToBus('0/3/0','DPT9',temp);
 
   //update graph
-
+//////////////////////////////////////////////////////////////
   var newDataPoint = {
     temp: temp,
     time: moment().format(' h:mm:ss '),
@@ -279,7 +295,7 @@ socket.on('input_temp', function(data){
   pusher.trigger('london-temp-chart', 'new-data', {
     dataPoint: newDataPoint
 });
-
+//////////////////////////////////////////////////////////////
     });
 //----used for button presses----//
     socket.on('mode', function(data){
@@ -294,8 +310,14 @@ socket.on('input_temp', function(data){
           timer.stop();
         }
         else if(mode === 3){
-          console.log('start timer');
-          timerTemp.start(pi);
+          if (functionTemp.timer.isStopped()) {
+            console.log('start timer');
+            functionTemp.timer.start();
+          } else {
+            console.log('stop timer');
+            functionTemp.timer.stop();
+          }
+
         };
 //        WriteToBus('0/0/6','DPT5',dim);                                                KNX off
 
