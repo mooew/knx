@@ -150,7 +150,7 @@ knx.on('bus_event', function(data){
   }else if(data.destination == '0/3/8'){
 
     //var pi = parseFloat(data.value).toFixed(1);
-      pi = data.value;
+      pi = (data.value / 255) * 100;
      time = data.time;
 
     var newDataPoint = {
@@ -258,12 +258,12 @@ io.on('connection', (socket) => {
     socket.on('input_comf', function(data){
         var inp = parseInt(data.inp);
         console.log('temp: ' + inp);
-//        WriteToBus('0/3/3','DPT5',inp);                                              KNX off
+        WriteToBus('0/3/3','DPT9',inp);                                             
   });
 socket.on('input_temp', function(data){
-    var temp = parseInt(data.inp);
+     temp = parseInt(data.inp);
     console.log('sp: ' +  temp);
-//        WriteToBus('0/3/0','DPT5',inp);
+        WriteToBus('0/3/0','DPT9',temp);
 
   //update graph
 
