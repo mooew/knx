@@ -262,19 +262,18 @@ io.on('connection', (socket) => {
     socket.on('input_comf', function(data){
         var inp = parseInt(data.inp);
         console.log('temp: ' + inp);
-        //tempo WriteToBus('0/3/3','DPT9',inp);
+         WriteToBus('0/3/3','DPT9',inp);
   });
 socket.on('input_temp', function(data){
      temp = parseInt(data.inp);
     console.log('sp: ' +  temp);
-        //tempo WriteToBus('0/3/0','DPT9',temp);
+         WriteToBus('0/3/0','DPT9',temp);
 
         dataPunt.temp = temp;
 dataPunt.time = moment().format(' h:mm:ss ');
   //update graph
 
 
-  //newDataPoint = dataPunt;
   console.log(newDataPoint);
   pusher.trigger('london-temp-chart', 'new-data', {
     dataPoint: dataPunt
