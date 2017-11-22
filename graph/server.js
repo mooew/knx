@@ -150,7 +150,7 @@ knx.on('bus_event', function(data){
   }else if(data.destination == '0/3/8'){
 
     //var pi = parseFloat(data.value).toFixed(1);
-      pi = data.value;
+      pi = (data.value / 255) * 100;
      time = data.time;
 
     var newDataPoint = {
