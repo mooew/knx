@@ -3,6 +3,7 @@ var express = require('express');
 var socket = require('socket.io');
 var path = require('path');
 var bodyParser = require('body-parser');
+var dataPunt = require('./data').dataPoint;
 var moment = require('moment');
 var Pusher = require('pusher');
 var timer = require('./functions').timer;
@@ -10,7 +11,7 @@ var functionTemp = require('./functionTemp');
 var knx = require('./functions').log_event;
 var logKNX = require('../utilities/test').log_event;
 var WriteToBus  = require('../knx_eibd').WriteToBus;
-//var m = require('./functionTemp');
+
 
 var pusher = new Pusher({
     appId: '426105',
@@ -20,13 +21,7 @@ var pusher = new Pusher({
    encrypted: true
 });
 
-// PI always come from knx
-// SP can come from KNX and functions and DOM
-// TT comes from function or DOM
-var sp = 22,
-    temp = 17,
-    time = null;
-var pi = functionTemp.pi;
+
 //App setup
 var app = express();
 
@@ -127,31 +122,26 @@ knx.on('bus_event', function(data){
     console.log(data)
      console.log('sp')
 	console.log(data.value)
-     sp = parseFloat(data.value).toFixed(2);
+     datapunt.sp = parseFloat(data.value).toFixed(2);
 
      //sp = data.value;
-     time = data.time;
 
+     dataPunt.time = moment().format(' h:mm:ss ')
 
-    var newDataPoint = {
-      temp: temp,
-      //time: time,
-      time: moment().format(' h:mm:ss '),
-      pi: pi,
-      sp: sp
-      //time: moment().format(' h:mm:ss ')
-    };
+  //   newDataPoint = dataPunt;
+
     console.log(newDataPoint);
     pusher.trigger('london-temp-chart', 'new-data', {
-      dataPoint: newDataPoint
+      dataPoint: dataPunt
   });
 
   }else if(data.destination == '0/3/8'){
 
     //var pi = parseFloat(data.value).toFixed(1);
-      pi = (data.value / 255) * 100;
-     time = data.time;
+      dataPunt.pi = parseFloat((data.value / 255) * 100).toFixed(2); ;
+     dataPunt.time = moment().format(' h:mm:ss ');
 
+/*
     var newDataPoint = {
       temp: temp,
     //  time: time,
@@ -161,11 +151,13 @@ knx.on('bus_event', function(data){
       //time: moment().format(' h:mm:ss ')
 
     }
+    */
+  //  newDataPoint = dataPunt;
     console.log(newDataPoint);
     pusher.trigger('london-temp-chart', 'new-data', {
-      dataPoint: newDataPoint
+      dataPoint: dataPunt
   });
-console.log(londonTempData);
+//console.log(londonTempData);
   }else {console.log('unknown source haha')}
 
 
@@ -173,18 +165,14 @@ console.log(londonTempData);
 });
 // functions
 functionTemp.func.on('deltatemp', function(data){
-  console.log('deltatemp ontvangen: ' + data)
-temp = temp + data.controller;
-  var newDataPoint = {
-    temp: temp,
-  //  time: time,
-    time: moment().format(' h:mm:ss '),
-    pi: pi,
-    sp: sp
-    //time: moment().format(' h:mm:ss ')
-}
+  console.log('deltatemp ontvangen: ' + data.controller)
+dataPunt.temp = dataPunt.temp + data.controller;
+dataPunt.time = moment().format(' h:mm:ss ');
+
+
+//newDataPoint = dataPunt;
 pusher.trigger('london-temp-chart', 'new-data', {
-  dataPoint: newDataPoint
+  dataPoint: dataPunt
 });
 
 
@@ -281,21 +269,18 @@ socket.on('input_temp', function(data){
     console.log('sp: ' +  temp);
         //tempo WriteToBus('0/3/0','DPT9',temp);
 
+        dataPunt.temp = temp;
+dataPunt.time = moment().format(' h:mm:ss ');
   //update graph
-//////////////////////////////////////////////////////////////
-  var newDataPoint = {
-    temp: temp,
-    time: moment().format(' h:mm:ss '),
-    pi: pi,
-    sp: sp
-    //time: moment().format(' h:mm:ss ')
 
-  }
+
+  //newDataPoint = dataPunt;
   console.log(newDataPoint);
   pusher.trigger('london-temp-chart', 'new-data', {
-    dataPoint: newDataPoint
+    dataPoint: dataPunt
 });
-//////////////////////////////////////////////////////////////
+
+
     });
 //----used for button presses----//
     socket.on('mode', function(data){
