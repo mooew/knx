@@ -3,10 +3,11 @@ var express = require('express');
 var socket = require('socket.io');
 var path = require('path');
 var bodyParser = require('body-parser');
+var dataPunt = require('./data').dataPoint;
 var moment = require('moment');
 var Pusher = require('pusher');
 var timer = require('./functions').timer;
-var timerTemp = require('./functionTemp').timer;
+var functionTemp = require('./functionTemp');
 var knx = require('./functions').log_event;
 var logKNX = require('../utilities/test').log_event;
 var WriteToBus  = require('../knx_eibd').WriteToBus;
@@ -20,13 +21,6 @@ var pusher = new Pusher({
    encrypted: true
 });
 
-// PI always come from knx
-// SP can come from KNX and functions and DOM
-// TT comes from function or DOM
-var pi = null,
-    sp = null,
-    temp = null,
-    time = null;
 
 //App setup
 var app = express();
@@ -46,7 +40,7 @@ var londonTempData = {
     ]
   };
 
-var wietse = {};
+
 //API//
 app.get('/getTemperature', function(req,res){
   res.send(londonTempData);
@@ -128,31 +122,26 @@ knx.on('bus_event', function(data){
     console.log(data)
      console.log('sp')
 	console.log(data.value)
-     sp = parseFloat(data.value).toFixed(2);
+     datapunt.sp = parseFloat(data.value).toFixed(2);
 
      //sp = data.value;
-     time = data.time;
 
+     dataPunt.time = moment().format(' h:mm:ss ')
 
-    var newDataPoint = {
-      temp: temp,
-      //time: time,
-      time: moment().format(' h:mm:ss '),
-      pi: pi,
-      sp: sp
-      //time: moment().format(' h:mm:ss ')
-    };
+  //   newDataPoint = dataPunt;
+
     console.log(newDataPoint);
     pusher.trigger('london-temp-chart', 'new-data', {
-      dataPoint: newDataPoint
+      dataPoint: dataPunt
   });
 
   }else if(data.destination == '0/3/8'){
 
     //var pi = parseFloat(data.value).toFixed(1);
-      pi = (data.value / 255) * 100;
-     time = data.time;
+      dataPunt.pi = parseFloat((data.value / 255) * 100).toFixed(2); ;
+     dataPunt.time = moment().format(' h:mm:ss ');
 
+/*
     var newDataPoint = {
       temp: temp,
     //  time: time,
@@ -162,17 +151,32 @@ knx.on('bus_event', function(data){
       //time: moment().format(' h:mm:ss ')
 
     }
+    */
+  //  newDataPoint = dataPunt;
     console.log(newDataPoint);
     pusher.trigger('london-temp-chart', 'new-data', {
-      dataPoint: newDataPoint
+      dataPoint: dataPunt
   });
-console.log(londonTempData);
+//console.log(londonTempData);
   }else {console.log('unknown source haha')}
 
 
 
 });
+// functions
+functionTemp.func.on('deltatemp', function(data){
+  console.log('deltatemp ontvangen: ' + data.controller)
+dataPunt.temp = dataPunt.temp + data.controller;
+dataPunt.time = moment().format(' h:mm:ss ');
 
+
+//newDataPoint = dataPunt;
+pusher.trigger('london-temp-chart', 'new-data', {
+  dataPoint: dataPunt
+});
+
+
+});
 
 // setpoint data SP
 
@@ -258,27 +262,23 @@ io.on('connection', (socket) => {
     socket.on('input_comf', function(data){
         var inp = parseInt(data.inp);
         console.log('temp: ' + inp);
-        WriteToBus('0/3/3','DPT9',inp);                                             
+         WriteToBus('0/3/3','DPT9',inp);
   });
 socket.on('input_temp', function(data){
      temp = parseInt(data.inp);
     console.log('sp: ' +  temp);
-        WriteToBus('0/3/0','DPT9',temp);
+         WriteToBus('0/3/0','DPT9',temp);
 
+        dataPunt.temp = temp;
+dataPunt.time = moment().format(' h:mm:ss ');
   //update graph
 
-  var newDataPoint = {
-    temp: temp,
-    time: moment().format(' h:mm:ss '),
-    pi: pi,
-    sp: sp
-    //time: moment().format(' h:mm:ss ')
 
-  }
   console.log(newDataPoint);
   pusher.trigger('london-temp-chart', 'new-data', {
-    dataPoint: newDataPoint
+    dataPoint: dataPunt
 });
+
 
     });
 //----used for button presses----//
@@ -294,8 +294,14 @@ socket.on('input_temp', function(data){
           timer.stop();
         }
         else if(mode === 3){
-          console.log('start timer');
-          timerTemp.start(pi);
+          if (functionTemp.timer.isStopped()) {
+            console.log('start timer');
+            functionTemp.timer.start();
+          } else {
+            console.log('stop timer');
+            functionTemp.timer.stop();
+          }
+
         };
 //        WriteToBus('0/0/6','DPT5',dim);                                                KNX off
 

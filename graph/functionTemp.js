@@ -1,18 +1,26 @@
 //functions
 //var moment = require('moment');
 var Timer = require('clockmaker').Timer;
-//var logKNX = require('../utilities/test').log_event;
-//var knx = require('../knx_eibd').knx_event;
-var delayMs = 1000;
-var pi;
+var dataPunt = require('./data').dataPoint;
+var EventEmitter = require('events').EventEmitter;
+
+var func = new EventEmitter();
+var delayMs = 1000 * 10;   //1 sec
 
 
-
+var delta = {
+  controller: null,
+  roomLoss: null
+};
 
 
 //var knx_json_obj ={'destination': dest, 'value': val, 'time':date };
 
 var timer = new Timer(function() {
+console.log('timer executed: ' + dataPunt.pi);
+delta.controller = (dataPunt.pi/200);
+
+func.emit('deltatemp', delta);
 
 }, delayMs, {
   repeat: true
@@ -40,4 +48,4 @@ Timer(function() {
 */
 
 module.exports.timer = timer;
-//exports.log_event = knx;
+module.exports.func = func;
