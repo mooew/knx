@@ -1,7 +1,7 @@
 // Using IIFE for Implementing Module Pattern to keep the Local Space for the JS Variables
 (function() {
-  //var socket = io.connect('http://192.168.2.231:9000');
-  var socket = io.connect('http://192.168.2.220:9000');
+  var socket = io.connect('http://localhost:9000');
+//  var socket = io.connect('http://192.168.2.220:9000');
 
   // Query DOM
   var   dim = document.getElementById('dimV'),
@@ -115,6 +115,9 @@
       xhr.send(JSON.stringify(payload));
     }
 
+
+
+////////////////////// GRAFIEK ///////////////////////////////////:::
 
    function renderWeatherChart(weatherData) {
      //take the canvas from the html file
@@ -294,6 +297,9 @@
 
         ]
     };
+//////////////////////////////////////////////////////////////////////////////
+
+
 
   ajax("/getTemperature", "GET",{}, onFetchTempSuccess);
   console.log('there was an ajax get request for all data');

@@ -9,8 +9,14 @@ var Pusher = require('pusher');
 var timer = require('./functions').timer;
 var functionTemp = require('./functionTemp');
 var knx = require('./functions').log_event;
-var logKNX = require('../utilities/test').log_event;
-var WriteToBus  = require('../knx_eibd').WriteToBus;
+//var logKNX = require('../utilities/test').log_event;
+//var WriteToBus  = require('../knx_eibd').WriteToBus;
+var binary_control = require('../knx.js').binary_control
+var connection = require('../knx.js').connection
+var dp1 = require('../knx.js').dp1
+var dp2 = require('../knx.js').dp2
+var ext_temp = require('../knx.js').ext_temp
+var comf = require('../knx.js').comf
 
 
 var pusher = new Pusher({
@@ -49,6 +55,7 @@ app.get('/getTemperature', function(req,res){
 //------------------------------------//
 //update graph throug http GET request//
 //------------------------------------//
+/*
 app.get('/addTemperature', function(req,res){
 
   var temp = parseInt(req.query.temperature);
@@ -76,10 +83,10 @@ app.get('/addTemperature', function(req,res){
   }
 });
 
-
+*/
 
 //----------------------------
-
+/*
 app.get('/addTemperature1', function(req,res){
 
   var temp = parseInt(req.query.temperature);
@@ -106,15 +113,47 @@ app.get('/addTemperature1', function(req,res){
     res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - temperature & time.'});
   }
 });
+*/
 
 //-------------------------------//
 //update graph through server KNX//
-//{'source': src, 'destination': dest,
-//  'type': dpt, 'value': val, 'time':date };
-//destination:  0/3/1 => setpoint
-//              0/3/0 => pi
 //-------------------------------//
 
+/*
+if(con == true){
+  console.log('connection oke')
+dp1.on('event', function (evt, src, dest, value) {
+console.log('setpsssssssssoint received: ' + value);
+})
+}
+*/
+
+dp2.on('change', function (oldvalue, newvalue) {
+console.log("KNX SP: value: %j", newvalue);
+
+ dataPunt.sp = parseFloat(newvalue).toFixed(2);
+ dataPunt.time = moment().format(' h:mm:ss ')
+console.log(dataPunt)
+ pusher.trigger('london-temp-chart', 'new-data', {
+   dataPoint: dataPunt
+  });
+ });
+
+ dp1.on('change', function (oldvalue, newvalue) {
+
+ //var pi = parseFloat(value).toFixed(1);
+ //console.log('pi output received: ' + value["data"])
+ console.log("KNX PI 1: value: %j", newvalue);
+
+ dataPunt.pi = parseFloat(newvalue).toFixed(2);
+ dataPunt.time = moment().format(' h:mm:ss ');
+console.log(dataPunt)
+ pusher.trigger('london-temp-chart', 'new-data', {
+   dataPoint: dataPunt
+  });
+ });
+
+/*
 knx.on('bus_event', function(data){
   //console.log('good job');
   //console.log(data);
@@ -141,7 +180,7 @@ knx.on('bus_event', function(data){
       dataPunt.pi = parseFloat((data.value / 255) * 100).toFixed(2); ;
      dataPunt.time = moment().format(' h:mm:ss ');
 
-/*
+
     var newDataPoint = {
       temp: temp,
     //  time: time,
@@ -151,7 +190,7 @@ knx.on('bus_event', function(data){
       //time: moment().format(' h:mm:ss ')
 
     }
-    */
+
   //  newDataPoint = dataPunt;
     console.log(newDataPoint);
     pusher.trigger('london-temp-chart', 'new-data', {
@@ -163,6 +202,8 @@ knx.on('bus_event', function(data){
 
 
 });
+*/
+
 // functions
 functionTemp.func.on('deltatemp', function(data){
   console.log('deltatemp ontvangen: ' + data.controller)
@@ -262,19 +303,21 @@ io.on('connection', (socket) => {
     socket.on('input_comf', function(data){
         var inp = parseInt(data.inp);
         console.log('temp: ' + inp);
-         WriteToBus('0/3/3','DPT9',inp);
+  //       WriteToBus('0/3/3','DPT9',inp);
+  comf.write(inp);
   });
 socket.on('input_temp', function(data){
      temp = parseInt(data.inp);
     console.log('sp: ' +  temp);
-         WriteToBus('0/3/0','DPT9',temp);
+  //       WriteToBus('0/3/0','DPT9',temp);
+  ext_temp.write(temp);
 
         dataPunt.temp = temp;
 dataPunt.time = moment().format(' h:mm:ss ');
   //update graph
 
 
-  console.log(newDataPoint);
+  //console.log(newDataPoint);
   pusher.trigger('london-temp-chart', 'new-data', {
     dataPoint: dataPunt
 });
@@ -301,8 +344,11 @@ dataPunt.time = moment().format(' h:mm:ss ');
             console.log('stop timer');
             functionTemp.timer.stop();
           }
-
-        };
+        }
+        else if (mode === 4) {
+          binary_control.write(false)
+        }
+        ;
 //        WriteToBus('0/0/6','DPT5',dim);                                                KNX off
 
     });
