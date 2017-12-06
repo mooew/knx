@@ -31,7 +31,7 @@ if((tick%2)==0) {
   knx_json_obj.time = moment().format(' h:mm:ss ');
 
 //  logKNX.emit('dim', {value: start});
-  knx.emit('bus_event', knx_json_obj);
+//  knx.emit('bus_event', knx_json_obj);  off
 
   if(start < 23){
     start = start + 0.5;
@@ -45,7 +45,7 @@ if((tick%2)==0) {
   knx_json_obj.time = moment().format(' h:mm:ss ');
 
 //  logKNX.emit('PI', {value: PI});
-  knx.emit('bus_event', knx_json_obj);
+//  knx.emit('bus_event', knx_json_obj);  off
   if(PI === 0){PI = 100;
   }else {PI = 0};
 
