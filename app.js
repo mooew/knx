@@ -54,8 +54,8 @@ console.log('Hello welcome to the knx bus monitor package')
 
 //***** This is a node application designed to act as a core
 //var knx  	= require('./knx_eibd');
-var knx  	= require('./knx');
-require('./utilities/test');
+//var knx  	= require('./knx');
+//require('./utilities/test');
 require('./graph/server');
 
 // import usb logger

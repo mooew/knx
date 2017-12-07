@@ -1,8 +1,8 @@
 //functions
 var moment = require('moment');
 var Timer = require('clockmaker').Timer;
-var logKNX = require('../utilities/test').log_event;
-var knx = require('../knx_eibd').knx_event
+//var logKNX = require('../utilities/test').log_event;
+//var knx = require('../knx_eibd').knx_event
 var delayMs = 4000;
 var start = 20;
 var PI = 0;
@@ -85,4 +85,3 @@ Timer(function() {
 */
 
 module.exports.timer = timer;
-exports.log_event = knx;

@@ -18,18 +18,6 @@ var connection = knx.Connection({
     dp1.bind(connection);
     dp2.bind(connection);
 
-/*
-    dp2.read((src, value) => {
-      console.log("**** RESPONSE %j reports current value 0/3/0: %j", src, value);
-    });
-    dp1.read((src, value) => {
-      console.log("**** RESPONSE %j reports current value 0/3/8: %j", src, value);
-    });
-*/
-
-
-
-
 
     },
     event: function (evt, src, dest, value) {
@@ -48,14 +36,6 @@ error: function(connstatus) {
   });
 
 
-
-//------------------
-
-  // declare a simple binary control datapoint
-  //var binary_control = new knx.Datapoint({ga: '0/0/5', dpt: 'DPT1.001'});
-  // bind it to the active connection
-  //binary_control.bind(connection);
-
   var dim_control = new knx.Datapoint({ga: '0/0/6', dpt: 'DPT5.005'});
   // bind it to the active connection
   dim_control.bind(connection);
@@ -68,23 +48,7 @@ error: function(connstatus) {
   // bind it to the active connection
   comf.bind(connection);
 
-//  var pi = new knx.Datapoint({ga: '0/3/8', dpt: 'DPT5.001'});
-  // bind it to the active connection
-//  pi.bind(connection);
 
-  //binary_control.write(data.checkbox);
-
-
-/*
-  dp1.on('change', function(oldvalue, newvalue){
-    console.log('dp1: ' + newvalue + ' %')
-  });
-  dp2.on('change', function(oldvalue, newvalue){
-    console.log('dp2: ' + newvalue + '°C')
-  });
-*/
-
-//  module.exports.binary_control = binary_control
   module.exports.ext_temp = ext_temp
   module.exports.comf = comf
   module.exports.connection = connection
