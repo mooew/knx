@@ -1,79 +1,157 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>KNX monitor</title>
-    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:200">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
-        <link rel="stylesheet" href="./style.css">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="test.css">
+<title>KNX Thermostat</title>
 </head>
-<body>
+
+<body style="background-color:#d4d4d4;">
+
+<div class="container-fluid">
 
 
-	<div id="content">
+  <div class="row">
+    <div class="col-lg-3" >
+        <h4>temperature</h4>
+                <div class="form-group row margin-bottom">
+                <label for="example-number-input" class="col-4 col-form-label">external temperature</label>
+                <div class="col-2">
+                <input class="form-control form-control-sm" type="number" value="19" id="temp-ext">
+              </div>
+            </div>
+
+    <div class="form-group ">
+    <input class="btn btn-outline-secondary" type="button" value="send" id="temp-send">
+    </div>
 
 
+        <h4>setpoints</h4>
+        <form>
+            <div class="form-group row margin-bottom">
+                <label for="example-number-input" class="col-4 col-form-label">economy cool</label>
+                <div class="col-2">
+                <input class="form-control form-control-sm" type="number" value="27" id="sp-1">
+              </div>
+            </div>
 
-		<header>Header</header>
-        <main>
-            <div id="loader" class="loader"></div>
-           <div>
-             <canvas id="weatherChart">
-             </canvas>
-          </div>
+            <div class="form-group row margin-bottom">
+              <label for="example-number-input" class="col-4 col-form-label">standby cool</label>
+              <div class="col-2">
+                <input class="form-control form-control-sm" type="number" value="24" id="sp-2">
+              </div>
+            </div>
 
-        </main>
-        <area1 class=nested>
-             <p>1 </p>
-             <p>2</p>
-             <p>3</p>
-             <p>4</p>
-        </area1>
-        <area2 class=nested>
-             <p><input id="dimV" type="text" placeholder="dim value" /></p>
-             <p><button id="send">Send</button></p>
+            <div class="form-group row margin-bottom">
+              <label for="example-number-input" class="col-4 col-form-label">comfort cool</label>
+              <div class="col-2">
+                <input class="form-control form-control-sm" type="number" value="21" id="sp-3">
+              </div>
+            </div>
 
-        </area2>
-        <aside class=nested>
-            <h5>setpoints</h5>
-                <sp>comfort: </sp>
-                <input id="in1" type="text" placeholder="comfort SP" />
-                 <button id="send1"> send </button>
-                <sp>temp: </sp>
-                <input id="in2" type="text" placeholder="temperature" />
-                 <button id="send2"> send </button>
+            <div class="form-group row margin-bottom">
+                <label for="example-number-input" class="col-4 col-form-label">comfort heat </label>
+                <div class="col-2">
+                <input class="form-control form-control-sm" type="number" value="21" id="sp-1">
+              </div>
+            </div>
 
+            <div class="form-group row margin-bottom">
+              <label for="example-number-input" class="col-4 col-form-label">standby heat</label>
+              <div class="col-2">
+                <input class="form-control form-control-sm" type="number" value="19" id="sp-2">
+              </div>
+            </div>
 
-        </aside>
+            <div class="form-group row margin-bottom">
+              <label for="example-number-input" class="col-4 col-form-label">economy heat</label>
+              <div class="col-2">
+                <input class="form-control form-control-sm" type="number" value="17" id="sp-3">
+              </div>
+            </div>
 
-        <prompt class=nested>
+    <div class="form-group ">
+    <input class="btn btn-outline-secondary" type="button" value="send" id="sp-send">
+    </div>
+       </form>
 
-            <h5>buttons</h5>
-            <div>
-             <input type="button" id="b1" value="h">
-             <input type="button" id="b2" value="c">
-             <input type="button" id="b3" value="a">
-             <input type="button" id="b4" value="off">
-						 <input type="button" id="reset" value="Reset Zoom">
-                </div>
+        <h4>mode select</h4>
 
+      <div class="btn-group" data-toggle="buttons">
 
+        <label class="btn btn-secondary active">
+        <input type="radio" name="options" id="mode-1" autocomplete="off" checked> OFF
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="options" id="mode-2" autocomplete="off"> heating
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="options" id="mode-3" autocomplete="off"> cooling
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="options" id="mode-4" autocomplete="off"> auto
+        </label>
+        </div>
 
+        <div class="btn-group" data-toggle="buttons">
 
+        <label class="btn btn-secondary active">
+        <input type="radio" name="options" id="hvac-4" autocomplete="off" checked> protect
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="options" id="hvac-3" autocomplete="off"> economy
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="options" id="hvac-2" autocomplete="off"> standby
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="options" id="hvac-1" autocomplete="off"> comfort
+        </label>
+        </div>
 
-
-
-        </prompt>
-        <footer>Footer</footer>
-
+				<h4>graph</h4>
+	<div class="form-group ">
+	<input class="btn btn-outline-secondary" type="button" value="reset" id="reset">
+  <input class="btn btn-outline-secondary" type="button" value="reset" id="reset">
 	</div>
 
 
-   	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+      </div>
+
+
+
+
+    <div class="col-lg-9" style="background-color:transparent;" >
+
+        <canvas id="weatherChart" width="1200" height="800" ></canvas>
+
+
+
+
+
+      </div>
+
+  </div>
+
+
+
+
+
+
+
+
+
+    </div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
 	<script type="text/javascript" src="./chartjs-plugin-zoom.js"></script>
-        <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
-        <script type="text/javascript" src="./app.js"></script>
+    <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+    <script type="text/javascript" src="./app.js"></script>
 </body>
+
 </html>

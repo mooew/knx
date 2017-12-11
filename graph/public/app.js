@@ -1,8 +1,10 @@
 // Using IIFE for Implementing Module Pattern to keep the Local Space for the JS Variables
-(function() {
+//(function() {
   var socket = io.connect('http://localhost:9000');
 
   // Query DOM
+  /*
+  /////////////////////////////OLD/////////////////////////
   var   dim = document.getElementById('dimV'),
         btn = document.getElementById('send'),
         heat = document.getElementById('button_heat'),
@@ -48,17 +50,9 @@
             });
 
         });
-/*
-        heat.addEventListener('click', function(){
-          console.log('button pressed');
-          socket.emit('mode', {mode: 1});
-        });
 
-        cool.addEventListener('click', function(){
-          console.log('button pressed');
-          socket.emit('mode', {mode: 0});
-        });
-        */
+
+
 //--------------------buttons-----------------------------------//
         button_1.addEventListener('click', function(){
           console.log('button pressed');
@@ -77,6 +71,31 @@
           socket.emit('mode', {mode: 4});
         });
 //-------------------------------------------------------------//
+  /////////////////////////////OLD/////////////////////////
+*/
+
+$(document).ready(function() {
+    $("#sp-send").click(function(){
+       var sp3 = $('#sp-3').val();
+        console.log(sp3);
+        socket.emit('input_comf', {inp: sp3});
+    });
+});
+
+$(document).ready(function() {
+    $("#temp-send").click(function(){
+       var tempExt = $('#temp-ext').val();
+        console.log(tempExt);
+        socket.emit('input_temp', {inp: tempExt});
+    });
+});
+
+$(document).ready(function() {
+    $("#reset").click(function(){
+      weatherChartRef.resetZoom();
+    });
+});
+
 
     // Enable pusher logging - don't include this in production
     Pusher.logToConsole = true;
@@ -233,8 +252,8 @@
                 pointHoverBackgroundColor: "rgba(75,192,192,1)",
                 pointHoverBorderColor: "rgba(220,220,220,1)",
                 pointHoverBorderWidth: 2,
-                pointRadius: 3,
-                pointHitRadius: 10,
+                pointRadius: 1,
+                pointHitRadius: 1,
                 data: [],           //y-axes
                 spanGaps: true,
                 steppedLine: true,
@@ -255,12 +274,12 @@
                 pointBorderColor: "rgba(200,192,200,1)",
                 pointBackgroundColor: "#fff",
                 pointBorderWidth: 1,
-                pointHoverRadius: 5,
+                pointHoverRadius: 1,
                 pointHoverBackgroundColor: "rgba(75,192,192,1)",
                 pointHoverBorderColor: "rgba(220,220,220,1)",
                 pointHoverBorderWidth: 2,
-                pointRadius: 3,
-                pointHitRadius: 10,
+                pointRadius: 1,
+                pointHitRadius: 1,
                 data: [],           //y-axes
                 spanGaps: true,
                 steppedLine: true,
@@ -270,23 +289,23 @@
             },
             {
                 label: "PI",
-                fill: true,
+                fill: false,
                 lineTension: 0,
-                backgroundColor: "rgba(176,216,218,0.4)",
-                borderColor: "rgba(176,216,218,1)",
+                backgroundColor: "#660000",
+                borderColor: "#660000",
                 borderCapStyle: 'butt',
                 borderDash: [],
                 borderDashOffset: 0.0,
                 borderJoinStyle: 'miter',
-                pointBorderColor: "rgba(75,192,192,1)",
+                pointBorderColor: "#660000",
                 pointBackgroundColor: "#fff",
                 pointBorderWidth: 1,
                 pointHoverRadius: 5,
-                pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                pointHoverBorderColor: "rgba(220,220,220,1)",
+                pointHoverBackgroundColor: "#660000",
+                pointHoverBorderColor: "#660000",
                 pointHoverBorderWidth: 2,
-                pointRadius: 3,
-                pointHitRadius: 10,
+                pointRadius: 1,
+                pointHitRadius: 1,
                 data: [],         //here comes the data
                 spanGaps: true,
                 steppedLine: true,
@@ -304,11 +323,16 @@
   console.log('there was an ajax get request for all data');
 
   function onFetchTempSuccess(response){      //callback function after ajax get wit JSON data
-    hideEle("loader");  //hide loading status
+    //hideEle("loader");  //hide loading status
     var respData = JSON.parse(response);
-   //store chartConfig.labels = respData.dataPoints.map(dataPoint => dataPoint.time);
-   //store chartConfig.datasets[0].data = respData.dataPoints.map(dataPoint => dataPoint.temperature);
-   //store chartConfig.datasets[1].data = respData.dataPoints.map(dataPoint => dataPoint.temperature);
+    console.log('respData: ' + respData)
+    chartConfig.labels = respData.dataPoints.map(dataPoint => dataPoint.time);
+    chartConfig.datasets[0].data = respData.dataPoints.map(dataPoint => dataPoint.sp);
+    chartConfig.datasets[1].data = respData.dataPoints.map(dataPoint => dataPoint.temp);
+    chartConfig.datasets[2].data = respData.dataPoints.map(dataPoint => dataPoint.pi);
+    console.log('chartConfig labels: ' + chartConfig.labels)
+    console.log('chartConfig 0: ' + chartConfig.datasets[0].data)
+    console.log('chartConfig 1: ' + chartConfig.datasets[1].data)
 //comment because after refresh data is mixed
 //now after refresh everything is gone
 
@@ -370,6 +394,7 @@
     weatherChartRef.data.datasets[1].data.push(newTempData.temp);
     weatherChartRef.data.datasets[2].data.push(newTempData.pi);
     weatherChartRef.update();
+    console.log(weatherChartRef)
   });
 
 
@@ -394,4 +419,4 @@ console.log("random");
   }
 /* TEMP CODE ENDS */
 
-})();
+//})();
