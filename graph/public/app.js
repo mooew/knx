@@ -325,9 +325,14 @@ $(document).ready(function() {
   function onFetchTempSuccess(response){      //callback function after ajax get wit JSON data
     //hideEle("loader");  //hide loading status
     var respData = JSON.parse(response);
-   //store chartConfig.labels = respData.dataPoints.map(dataPoint => dataPoint.time);
-   //store chartConfig.datasets[0].data = respData.dataPoints.map(dataPoint => dataPoint.temperature);
-   //store chartConfig.datasets[1].data = respData.dataPoints.map(dataPoint => dataPoint.temperature);
+    console.log('respData: ' + respData)
+    chartConfig.labels = respData.dataPoints.map(dataPoint => dataPoint.time);
+    chartConfig.datasets[0].data = respData.dataPoints.map(dataPoint => dataPoint.sp);
+    chartConfig.datasets[1].data = respData.dataPoints.map(dataPoint => dataPoint.temp);
+    chartConfig.datasets[2].data = respData.dataPoints.map(dataPoint => dataPoint.pi);
+    console.log('chartConfig labels: ' + chartConfig.labels)
+    console.log('chartConfig 0: ' + chartConfig.datasets[0].data)
+    console.log('chartConfig 1: ' + chartConfig.datasets[1].data)
 //comment because after refresh data is mixed
 //now after refresh everything is gone
 
@@ -389,6 +394,7 @@ $(document).ready(function() {
     weatherChartRef.data.datasets[1].data.push(newTempData.temp);
     weatherChartRef.data.datasets[2].data.push(newTempData.pi);
     weatherChartRef.update();
+    console.log(weatherChartRef)
   });
 
 

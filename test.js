@@ -1,30 +1,32 @@
-var dp1 = {
-  ga: '0/3/8',
-  dpt: 'DPT5.001'
-}
-console.log(typeof dp1)
-var dp2 = {
-  ga: '0/3/2',
-  dpt: 'DPT9.001'
-}
-
-var ets = {dp1, dp2}
+var londonTempData = {
+    city: 'London',
+    unit: 'celsius',
+    dataPoints: [
 
 
-console.log(dp1)
-console.log(ets)
-
-console.log(ets.dp1.dpt)
-for (var key in ets){
-  console.log(key)
-  console.log(typeof key)
-
-  var obj = ets[key];
-  console.log('?: ' + typeof obj)
-}
 
 
-Object.keys(ets).forEach(function(key){
-  console.log(key)
-  console.log(typeof key)
-})
+    ]
+  }
+
+
+  var data1 = {
+    time: 30,
+    sp: 14,
+    temp: 18,
+  }
+
+  var data2 = {
+    time: 80,
+    sp: 12,
+    temp: 18,
+  }
+
+londonTempData.dataPoints[londonTempData.dataPoints.length] = data1
+londonTempData.dataPoints[londonTempData.dataPoints.length] = data2
+
+
+  console.log(londonTempData.dataPoints[0])
+  console.log(londonTempData.dataPoints[1])
+  console.log(londonTempData.dataPoints[2])
+  console.log(londonTempData.dataPoints[3])

@@ -34,16 +34,20 @@ var londonTempData = {
     unit: 'celsius',
     dataPoints: [
 
-    ],
-    piController: [
+
+
 
     ]
-  };
-
+  }
+app.get('/ets', function(req, res){
+  res.render('ets');
+})
 
 //API//
 app.get('/getTemperature', function(req,res){
   res.send(londonTempData);
+  console.log('/getTemperature: ' + londonTempData.dataPoints[londonTempData.dataPoints.length - 1].time)
+
 });
 
 //------------------------------------//
@@ -94,7 +98,16 @@ ets.dp2.on('change', function (oldvalue, newvalue) {
   pusher.trigger('london-temp-chart', 'new-data', {
     dataPoint: dataPunt
   });
+  var help = new Object()
+  help.time = dataPunt.time
+  help.temp = dataPunt.temp
+  help.pi = dataPunt.pi
+  help.sp = dataPunt.sp
+  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
+  //console.log('londonTempData: ' + londonTempData.dataPoints[londonTempData.dataPoints.length-1].time)
 });
+
+
 
 ets.dp1.on('change', function (oldvalue, newvalue) {
   console.log("KNX PI: value: %j %", newvalue);
@@ -102,9 +115,16 @@ ets.dp1.on('change', function (oldvalue, newvalue) {
   dataPunt.pi = parseFloat(newvalue).toFixed(2);
   dataPunt.time = moment().format(' h:mm:ss ');
 
+
   pusher.trigger('london-temp-chart', 'new-data', {
      dataPoint: dataPunt
   });
+  var help = new Object()
+  help.time = dataPunt.time
+  help.temp = dataPunt.temp
+  help.pi = dataPunt.pi
+  help.sp = dataPunt.sp
+  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
 });
 
 
@@ -115,9 +135,16 @@ functionTemp.func.on('deltatemp', function(data){
   dataPunt.temp = dataPunt.temp + data.controller;
   dataPunt.time = moment().format(' h:mm:ss ');
 
+
   pusher.trigger('london-temp-chart', 'new-data', {
     dataPoint: dataPunt
   });
+  var help = new Object()
+  help.time = dataPunt.time
+  help.temp = dataPunt.temp
+  help.pi = dataPunt.pi
+  help.sp = dataPunt.sp
+  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
 });
 
 
@@ -166,9 +193,16 @@ console.log('made socket connection', socket.id);
       dataPunt.temp = temp;
       dataPunt.time = moment().format(' h:mm:ss ');
 
+
       pusher.trigger('london-temp-chart', 'new-data', {
         dataPoint: dataPunt
         });
+      var help = new Object()
+      help.time = dataPunt.time
+      help.temp = dataPunt.temp
+      help.pi = dataPunt.pi
+      help.sp = dataPunt.sp
+  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
       });
 
 //----used for button presses----//
