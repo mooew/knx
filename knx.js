@@ -1,6 +1,7 @@
 var knx = require('knx');
 
 var dp1 = new knx.Datapoint({ga: '0/3/8', dpt: 'DPT5.001'});
+var pwm = new knx.Datapoint({ga: '0/3/8', dpt: 'DPT5.001'});
 var dp2 = new knx.Datapoint({ga: '0/3/2', dpt: 'DPT9.001'});
 var ext_temp = new knx.Datapoint({ga: '0/3/0', dpt: 'DPT9.001'});
 var comf = new knx.Datapoint({ga: '0/3/3', dpt: 'DPT9.001'});
