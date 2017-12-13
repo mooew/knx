@@ -10,6 +10,7 @@ var timer = require('./functions').timer;
 var functionTemp = require('./functionTemp');
 var knx = require('./functions').log_event;
 var ets = require('../knx.js').ets
+//var connection = require('../knx.js').connection
 
 
 
@@ -127,6 +128,18 @@ ets.dp1.on('change', function (oldvalue, newvalue) {
   londonTempData.dataPoints[londonTempData.dataPoints.length] = help
 });
 
+//mode is updated by knx
+//0 = OFF, 1 = heat, 2 = cool, 3 = auto
+
+/*
+//hvac mode is updated by knx
+ets.mode_fb.on('change', function (oldvalue, newvalue) {
+//1 = comf, 2 = stdby, 3 = eco, 4 = protect
+socket.emit('server-hvac-fb', newvalue)
+});
+*/
+
+//hvac mode is update by server
 
 // functions
 //autoate the room temperature
@@ -206,18 +219,21 @@ console.log('made socket connection', socket.id);
       });
 
 //----used for button presses----//
-    socket.on('mode', function(data){
-      var mode = parseInt(data.mode);
-        console.log(mode);
-
-        if(mode === 1){
+    socket.on('hvac', function(data){
+      //0 = OFF, 1 = heat, 2 = cool, 3 = auto
+      var mode = parseInt(data);
+        console.log('mode: ' + mode);
+        ets.mode.write(mode);
+        /*
+        if(mode === 0){
           //timer.setDelay(timer.getDelay() + 1000);
-          timer.start();
+          //timer.start();
         }
-        else if (mode === 2) {
-          timer.stop();
+        else if (mode === 1) {
+          //timer.stop();
         }
-        else if(mode === 3){
+        else if(mode === 2){
+          /*
           if (functionTemp.timer.isStopped()) {
             console.log('start timer');
             functionTemp.timer.start();
@@ -225,12 +241,27 @@ console.log('made socket connection', socket.id);
             console.log('stop timer');
             functionTemp.timer.stop();
           }
-        }
-        else if (mode === 4) {
 
         }
+        else if (mode === 3) {
 
+        }
+*/
 
+    });
+
+    socket.on('hvac', function(data){
+      var mode = parseInt(data);
+      console.log('hvac mode: ' + mode);
+      //console.log(connection.connected)
+      // test --> socket.emit('server-mode-fb', mode)
+
+    });
+
+    //hvac mode is updated by knx
+    ets.mode_fb.on('change', function (oldvalue, newvalue) {
+    //1 = comf, 2 = stdby, 3 = eco, 4 = protect
+    socket.emit('server-hvac-fb', newvalue)
     });
 
 });

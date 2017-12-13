@@ -3,76 +3,6 @@
   var socket = io.connect('http://localhost:9000');
 
   // Query DOM
-  /*
-  /////////////////////////////OLD/////////////////////////
-  var   dim = document.getElementById('dimV'),
-        btn = document.getElementById('send'),
-        heat = document.getElementById('button_heat'),
-        cool = document.getElementById('button_cool'),
-        reset = document.getElementById('reset'),
-
-        input_1 = document.getElementById('in1'),
-        send_1 = document.getElementById('send1'),
-        input_2 = document.getElementById('in2'),
-        send_2 = document.getElementById('send2'),
-
-        button_1 = document.getElementById('b1'),
-        button_2 = document.getElementById('b2'),
-        button_3 = document.getElementById('b3'),
-        button_4 = document.getElementById('b4');
-
-        reset.addEventListener('click', function(){
-          console.log('reset zoom');
-          weatherChartRef.resetZoom();
-        });
-
-        // Emit events
-
-        btn.addEventListener('click', function(){
-          console.log('button pressed');
-          socket.emit('trigger', {
-              dim: dim.value
-          });
-
-        });
-
-        send_1.addEventListener('click', function(){
-          console.log('button pressed');
-          socket.emit('input_comf', {
-              inp: input_1.value
-          });
-          });
-
-          send_2.addEventListener('click', function(){
-            console.log('button pressed');
-            socket.emit('input_temp', {
-                inp: input_2.value
-            });
-
-        });
-
-
-
-//--------------------buttons-----------------------------------//
-        button_1.addEventListener('click', function(){
-          console.log('button pressed');
-          socket.emit('mode', {mode: 1});
-        });
-        button_2.addEventListener('click', function(){
-          console.log('button pressed');
-          socket.emit('mode', {mode: 2});
-        });
-        button_3.addEventListener('click', function(){
-          console.log('button pressed');
-          socket.emit('mode', {mode: 3});
-        });
-        button_4.addEventListener('click', function(){
-          console.log('button pressed');
-          socket.emit('mode', {mode: 4});
-        });
-//-------------------------------------------------------------//
-  /////////////////////////////OLD/////////////////////////
-*/
 
 $(document).ready(function() {
     $("#sp-send").click(function(){
@@ -94,7 +24,36 @@ $(document).ready(function() {
     $("#reset").click(function(){
       weatherChartRef.resetZoom();
     });
+
+    //mode: off heat cool auto
+    $('#mode input').on('change', function() {
+   //alert($('input[name=options]:checked', '#mode').val());
+   socket.emit('mode',
+    $('input[name=options]:checked', '#mode').val())
+    });
+
+    //mode: comfort stdby eco protect
+    $('#hvac input').on('change', function() {
+   //alert($('input[name=options]:checked', '#hvac').val());
+   socket.emit('hvac',
+    $('input[name=options]:checked', '#hvac').val())
+    });
+
+
+//update dom from the server
+  socket.on('server-hvac-fb', function(data){
+    //select = stringify(data)
+    //1 = comf, 2 = stdby, 3 = eco, 4 = protect
+    $("#hvac-" + data).prop('checked', true).trigger("click");
+  })
+
+
+
 });
+
+
+
+
 
 
     // Enable pusher logging - don't include this in production
@@ -336,7 +295,7 @@ $(document).ready(function() {
 //comment because after refresh data is mixed
 //now after refresh everything is gone
 
-    renderWeatherChart(chartConfig)
+   renderWeatherChart(chartConfig)
     //now graph is visible after reloading!!
   }
 
