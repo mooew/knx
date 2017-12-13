@@ -34,17 +34,17 @@ $(document).ready(function() {
 
     //mode: comfort stdby eco protect
     $('#hvac input').on('change', function() {
-   //alert($('input[name=options]:checked', '#mode').val());
+   //alert($('input[name=options]:checked', '#hvac').val());
    socket.emit('hvac',
     $('input[name=options]:checked', '#hvac').val())
     });
 
 
 //update dom from the server
-  socket.on('server-mode-fb', function(data){
+  socket.on('server-hvac-fb', function(data){
     //select = stringify(data)
-    //0 = OFF, 1 = heat, 2 = cool, 3 = auto
-    $("#mode-" + data).prop('checked', true).trigger("click");
+    //1 = comf, 2 = stdby, 3 = eco, 4 = protect
+    $("#hvac-" + data).prop('checked', true).trigger("click");
   })
 
 
@@ -295,7 +295,7 @@ $(document).ready(function() {
 //comment because after refresh data is mixed
 //now after refresh everything is gone
 
-    renderWeatherChart(chartConfig)
+   renderWeatherChart(chartConfig)
     //now graph is visible after reloading!!
   }
 

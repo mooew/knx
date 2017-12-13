@@ -129,12 +129,17 @@ ets.dp1.on('change', function (oldvalue, newvalue) {
 });
 
 //mode is updated by knx
-ets.mode_fb.on('change', function (oldvalue, newvalue) {
 //0 = OFF, 1 = heat, 2 = cool, 3 = auto
-socket.emit('server-mode-fb', newvalue)
-});
 
-//mode is update by server
+/*
+//hvac mode is updated by knx
+ets.mode_fb.on('change', function (oldvalue, newvalue) {
+//1 = comf, 2 = stdby, 3 = eco, 4 = protect
+socket.emit('server-hvac-fb', newvalue)
+});
+*/
+
+//hvac mode is update by server
 
 // functions
 //autoate the room temperature
@@ -214,7 +219,7 @@ console.log('made socket connection', socket.id);
       });
 
 //----used for button presses----//
-    socket.on('mode', function(data){
+    socket.on('hvac', function(data){
       //0 = OFF, 1 = heat, 2 = cool, 3 = auto
       var mode = parseInt(data);
         console.log('mode: ' + mode);
@@ -251,6 +256,12 @@ console.log('made socket connection', socket.id);
       //console.log(connection.connected)
       // test --> socket.emit('server-mode-fb', mode)
 
+    });
+
+    //hvac mode is updated by knx
+    ets.mode_fb.on('change', function (oldvalue, newvalue) {
+    //1 = comf, 2 = stdby, 3 = eco, 4 = protect
+    socket.emit('server-hvac-fb', newvalue)
     });
 
 });

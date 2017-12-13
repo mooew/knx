@@ -11,7 +11,7 @@ var ets = {dp1, dp2, ext_temp, comf, mode_fb, mode}
 
 
 var connection = knx.Connection({
-  ipAddr: '192.168.2.221', ipPort: 3671,
+  ipAddr: '10.0.211.39', ipPort: 3671,
   physAddr: '1.1.8',
 
   handlers: {
