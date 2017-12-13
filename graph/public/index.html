@@ -15,12 +15,18 @@
   <div class="row">
     <div class="col-lg-3" >
         <h4>temperature</h4>
-                <div class="form-group row margin-bottom">
-                <label for="example-number-input" class="col-4 col-form-label">external temperature</label>
-                <div class="col-2">
-                <input class="form-control form-control-sm" type="number" value="19" id="temp-ext">
-              </div>
+        <div class="form-group row margin-bottom">
+          <label for="temp-ext" class="col col-form-label">external temp</label>
+          <div class="col">
+            <div class="input-group input-group-sm">
+              <input type="number" class="form-control" value="21" id="temp-ext">
+              <span class="input-group-btn">
+                <button class="btn btn-secondary" type="button" id="temp-ext-s">send</button>
+              </span>
             </div>
+           </div>
+        </div>
+
 
     <div class="form-group ">
     <input class="btn btn-outline-secondary" type="button" value="send" id="temp-send">
@@ -29,47 +35,80 @@
 
         <h4>setpoints</h4>
         <form>
-            <div class="form-group row margin-bottom">
-                <label for="example-number-input" class="col-4 col-form-label">economy cool</label>
-                <div class="col-2">
-                <input class="form-control form-control-sm" type="number" value="27" id="sp-1">
-              </div>
-            </div>
 
-            <div class="form-group row margin-bottom">
-              <label for="example-number-input" class="col-4 col-form-label">standby cool</label>
-              <div class="col-2">
-                <input class="form-control form-control-sm" type="number" value="24" id="sp-2">
+          <div class="form-group row margin-bottom">
+            <label for="sp-1" class="col col-form-label">economy cool</label>
+            <div class="col">
+              <div class="input-group input-group-sm">
+                <input type="number" class="form-control" value="25" id="sp-1">
+                <span class="input-group-btn">
+                  <button class="btn btn-secondary" type="button">send</button>
+                </span>
               </div>
-            </div>
+             </div>
+          </div>
+          <div class="form-group row margin-bottom">
+            <label for="sp-2" class="col col-form-label">standby cool</label>
+            <div class="col">
+              <div class="input-group input-group-sm">
+                <input type="number" class="form-control" value="23" id="sp-2">
+                <span class="input-group-btn">
+                  <button class="btn btn-secondary" type="button">send</button>
+                </span>
+              </div>
+             </div>
+          </div>
+          <div class="form-group row margin-bottom">
+            <label for="sp-3" class="col col-form-label">comfort cool</label>
+            <div class="col">
+              <div class="input-group input-group-sm">
+                <input type="number" class="form-control" value="21" id="sp-3">
+                <span class="input-group-btn">
+                  <button class="btn btn-secondary" type="button" id="sp-3-s">send</button>
+                </span>
+              </div>
+             </div>
+          </div>
+          <div class="form-group row margin-bottom">
+            <label for="sp-4" class="col col-form-label">comfort heat</label>
+            <div class="col">
+              <div class="input-group input-group-sm">
+                <input type="number" class="form-control" value="21" id="sp-4">
+                <span class="input-group-btn">
+                  <button class="btn btn-secondary" type="button" id="sp-4-s">send</button>
+                </span>
+              </div>
+             </div>
+          </div>
+          <div class="form-group row margin-bottom">
+            <label for="sp-5" class="col col-form-label">standby heat</label>
+            <div class="col">
+              <div class="input-group input-group-sm">
+                <input type="number" class="form-control" value="19" id="sp-5">
+                <span class="input-group-btn">
+                  <button class="btn btn-secondary" type="button" id="sp-5-s">send</button>
+                </span>
+              </div>
+             </div>
+          </div>
+          <div class="form-group row margin-bottom">
+            <label for="sp-6" class="col col-form-label">economy heat</label>
+            <div class="col">
+              <div class="input-group input-group-sm">
+                <input type="number" class="form-control" value="17" id="sp-6">
+                <span class="input-group-btn">
+                  <button class="btn btn-secondary" type="button" id="sp-6-s">send</button>
+                </span>
+              </div>
+             </div>
+          </div>
 
-            <div class="form-group row margin-bottom">
-              <label for="example-number-input" class="col-4 col-form-label">comfort cool</label>
-              <div class="col-2">
-                <input class="form-control form-control-sm" type="number" value="21" id="sp-3">
-              </div>
-            </div>
 
-            <div class="form-group row margin-bottom">
-                <label for="example-number-input" class="col-4 col-form-label">comfort heat </label>
-                <div class="col-2">
-                <input class="form-control form-control-sm" type="number" value="21" id="sp-1">
-              </div>
-            </div>
 
-            <div class="form-group row margin-bottom">
-              <label for="example-number-input" class="col-4 col-form-label">standby heat</label>
-              <div class="col-2">
-                <input class="form-control form-control-sm" type="number" value="19" id="sp-2">
-              </div>
-            </div>
 
-            <div class="form-group row margin-bottom">
-              <label for="example-number-input" class="col-4 col-form-label">economy heat</label>
-              <div class="col-2">
-                <input class="form-control form-control-sm" type="number" value="17" id="sp-3">
-              </div>
-            </div>
+
+
+
 
     <div class="form-group ">
     <input class="btn btn-outline-secondary" type="button" value="send" id="sp-send">

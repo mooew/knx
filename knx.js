@@ -15,7 +15,7 @@ var ets = {dp1, dp2, ext_temp, comf, mode_fb, mode}
 var connection = knx.Connection({
   ipAddr: '10.0.211.39', ipPort: 3671,
   physAddr: '1.1.8',
-
+  //debug: true,
   handlers: {
     connected: function() {
       console.log('Connected to KNX!');

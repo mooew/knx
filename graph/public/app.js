@@ -1,26 +1,20 @@
-// Using IIFE for Implementing Module Pattern to keep the Local Space for the JS Variables
-//(function() {
   var socket = io.connect('http://localhost:9000');
 
   // Query DOM
 
 $(document).ready(function() {
-    $("#sp-send").click(function(){
-       var sp3 = $('#sp-3').val();
-        console.log(sp3);
+    $("#sp-4-s").click(function(){
+       var sp4 = $('#sp-4').val();
+        console.log(sp4);
         socket.emit('input_comf', {inp: sp3});
     });
-});
 
-$(document).ready(function() {
-    $("#temp-send").click(function(){
+    $("#temp-ext-s").click(function(){
        var tempExt = $('#temp-ext').val();
         console.log(tempExt);
         socket.emit('input_temp', {inp: tempExt});
     });
-});
 
-$(document).ready(function() {
     $("#reset").click(function(){
       weatherChartRef.resetZoom();
     });
