@@ -3,11 +3,48 @@
   // Query DOM
 
 $(document).ready(function() {
+
+    $("#sp-6-s").click(function(){
+       var sp6 = $('#sp-6').val();
+        console.log('sp6 economy heat: ' + sp6);
+        socket.emit('input_comf', {inp: sp6, id:6});
+    });
+
+    $("#sp-5-s").click(function(){
+       var sp5 = $('#sp-5').val();
+        console.log('sp5 standby heat: ' + sp5);
+        socket.emit('input_comf', {inp: sp5, id:5});
+    });
+
     $("#sp-4-s").click(function(){
        var sp4 = $('#sp-4').val();
-        console.log(sp4);
-        socket.emit('input_comf', {inp: sp3});
+        console.log('sp4 comfort heat: ' + sp4);
+        socket.emit('input_comf', {inp: sp4, id:4});
     });
+
+    $("#sp-3-s").click(function(){
+       var sp3 = $('#sp-3').val();
+        console.log('sp3 comfort cool: ' + sp3);
+        socket.emit('input_comf', {inp: sp3, id:3});
+    });
+
+    $("#sp-2-s").click(function(){
+       var sp2 = $('#sp-2').val();
+       //var idd = 2;
+        console.log('sp2 standby cool: ' + sp2);
+        socket.emit('input_comf', {inp: sp2, id:2});
+    });
+
+    $("#sp-1-s").click(function(){
+       var sp1 = $('#sp-1').val();
+       //var idd = 1;
+        console.log('sp1 standby cool: ' + sp1);
+        socket.emit('input_comf', {inp: sp1, id:1});
+    });
+
+
+
+
 
     $("#temp-ext-s").click(function(){
        var tempExt = $('#temp-ext').val();

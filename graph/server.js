@@ -191,8 +191,9 @@ console.log('made socket connection', socket.id);
 // the graph will be updated via response of KNX
     socket.on('input_comf', function(data){
         var inp = parseInt(data.inp);
-        console.log('temp: ' + inp);
-      ets.comf.write(inp);
+        var id = parseInt(data.id);
+        console.log('temp: ' + inp + ' ' + id);
+      //ets.comf.write(inp);
   });
 
 // ext temperature
