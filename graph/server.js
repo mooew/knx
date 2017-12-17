@@ -116,6 +116,7 @@ function storePoint(data){
   help.time = data.time
   help.temp = data.temp
   help.pi = data.pi
+  help.pi_cool = data.pi_cool
   help.sp = data.sp
   londonTempData.dataPoints[londonTempData.dataPoints.length] = help
 }
@@ -134,10 +135,10 @@ ets.setpoint.on('change', function (oldvalue, newvalue) {
 
 //----------------------PI or PWM ---------------------//
 
-ets.output_pi.on('change', function (oldvalue, newvalue) {
+ets.output_pi_heat.on('change', function (oldvalue, newvalue) {
   console.log("KNX PI: value: %j %", newvalue);
 
-  dataPunt.pi = parseFloat(newvalue).toFixed(2);
+  dataPunt.pi = newvalue.toFixed(2);
   dataPunt.time = moment().format(' h:mm:ss ');
 
   socket.emit('new-graph-data', dataPunt);
@@ -145,10 +146,21 @@ ets.output_pi.on('change', function (oldvalue, newvalue) {
 
 });
 
-ets.output_pwm.on('change', function (oldvalue, newvalue) {
+ets.output_pwm_heat.on('change', function (oldvalue, newvalue) {
   console.log("KNX PI: value: %j %", newvalue);
 
   dataPunt.pi = newvalue * 100;
+  dataPunt.time = moment().format(' h:mm:ss ');
+
+  socket.emit('new-graph-data', dataPunt);
+  storePoint(dataPoint)
+
+});
+
+ets.output_pi_cool.on('change', function (oldvalue, newvalue) {
+  console.log("KNX PI: value: %j %", newvalue);
+
+  dataPunt.pi_cool = newvalue;
   dataPunt.time = moment().format(' h:mm:ss ');
 
   socket.emit('new-graph-data', dataPunt);
@@ -164,7 +176,9 @@ ets.output_pwm.on('change', function (oldvalue, newvalue) {
 //automate the room temperature
 functionTemp.func.on('deltatemp', function(data){
   console.log('deltatemp ontvangen: ' + data.controller)
-  dataPunt.temp = dataPunt.temp + data.controller;
+  console.log(typeof dataPunt.temp)
+  console.log(typeof data.controller)
+  dataPunt.temp = parseInt(dataPunt.temp) + data.controller;
   dataPunt.time = moment().format(' h:mm:ss ');
 
   socket.emit('new-graph-data', dataPunt)

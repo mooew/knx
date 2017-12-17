@@ -160,7 +160,7 @@ function startScript(){
                     tooltipFormat: 'h:mm:ss'
                   },
                   scaleLabel: {
-                    display: true,
+                    display: false,
                     labelString: 'Date'
                   }
                 }, ],
@@ -169,7 +169,7 @@ function startScript(){
                   position: "left",
                   id: "y-axis-1",
                   scaleLabel: {
-                    display: true,
+                    display: false,
                     labelString: 'value'
                   },
                   ticks: {
@@ -183,14 +183,17 @@ function startScript(){
                 // grid line settings
                 gridLines: {
                     drawOnChartArea: false, // only want the grid lines for one axis to show up
+                    drawBorder: false,
+                    display: false,
                 },
                 scaleLabel: {
-                  display: true,
+                  display: false,
                   labelString: 'value'
                 },
                 ticks: {
                   suggestedMin: 0,
-                  suggestedMax: 500
+                  suggestedMax: 500,
+                  display: false,
               }
 
               }]
@@ -285,7 +288,7 @@ function startScript(){
 
             },
             {
-                label: "PI",
+                label: "PI heat",
                 fill: false,
                 lineTension: 0,
                 backgroundColor: "#660000",
@@ -300,6 +303,31 @@ function startScript(){
                 pointHoverRadius: 5,
                 pointHoverBackgroundColor: "#660000",
                 pointHoverBorderColor: "#660000",
+                pointHoverBorderWidth: 2,
+                pointRadius: 1,
+                pointHitRadius: 1,
+                data: [],         //here comes the data
+                spanGaps: true,
+                steppedLine: true,
+                yAxisID: "y-axis-2",
+
+            },
+            {
+                label: "PI cool",
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "#000066",
+                borderColor: "#000066",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "#000066",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "#000066",
+                pointHoverBorderColor: "#000066",
                 pointHoverBorderWidth: 2,
                 pointRadius: 1,
                 pointHitRadius: 1,
@@ -327,6 +355,7 @@ function startScript(){
     chartConfig.datasets[0].data = respData.dataPoints.map(dataPoint => dataPoint.sp);
     chartConfig.datasets[1].data = respData.dataPoints.map(dataPoint => dataPoint.temp);
     chartConfig.datasets[2].data = respData.dataPoints.map(dataPoint => dataPoint.pi);
+    chartConfig.datasets[3].data = respData.dataPoints.map(dataPoint => dataPoint.pi_cool);
     console.log('chartConfig labels: ' + chartConfig.labels)
     console.log('chartConfig 0: ' + chartConfig.datasets[0].data)
     console.log('chartConfig 1: ' + chartConfig.datasets[1].data)
@@ -404,6 +433,7 @@ function startScript(){
     weatherChartRef.data.datasets[0].data.push(newTempData.sp);
     weatherChartRef.data.datasets[1].data.push(newTempData.temp);
     weatherChartRef.data.datasets[2].data.push(newTempData.pi);
+    weatherChartRef.data.datasets[3].data.push(newTempData.pi_cool);
     weatherChartRef.update();
     console.log(weatherChartRef)
   });
