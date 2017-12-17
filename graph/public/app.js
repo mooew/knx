@@ -79,7 +79,8 @@ $(document).ready(function() {
     });
 
 
-//update dom from the server
+/////////////////update DOM from the server//////////////
+
 //hvac mode is updated by knx
   socket.on('server-hvac-fb', function(data){
     //select = stringify(data)
@@ -101,21 +102,9 @@ socket.on('server-hc-fb', function(data){
 
 
 
-
-
-    // Enable pusher logging - don't include this in production
-    Pusher.logToConsole = true;
-
-
-
     var serverUrl = "/",
         members = [],
-        pusher = new Pusher('95be360cf53aab13f769', {
-          cluster: 'eu',
-        encrypted: true
-       }),
-
-        channel,weatherChartRef,
+        weatherChartRef,
         timeFormat = 'h:mm:ss';
 
 
@@ -201,7 +190,7 @@ function startScript(){
                 },
                 ticks: {
                   suggestedMin: 0,
-                  suggestedMax: 100
+                  suggestedMax: 500
               }
 
               }]

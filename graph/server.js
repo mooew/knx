@@ -11,6 +11,7 @@ var functionTemp = require('./functionTemp');
 var knx = require('./functions').log_event;
 var ets = require('../knx.js').ets
 //var connection = require('../knx.js').connection
+var test = true;
 
 
 
@@ -108,6 +109,18 @@ console.log('made socket connection', socket.id);
 //update graph through server KNX//
 //-------------------------------//
 //////////////////new js file ////////////////////////////////////////////
+function storePoint(data){
+  //ctreate new object and store this in londonTempData array
+  console.log(data)
+  var help = new Object()
+  help.time = data.time
+  help.temp = data.temp
+  help.pi = data.pi
+  help.sp = data.sp
+  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
+}
+
+//--------------------setpoint--------------------------//
 
 ets.setpoint.on('change', function (oldvalue, newvalue) {
   console.log("KNX SP: value: %j °C", newvalue);
@@ -115,20 +128,11 @@ ets.setpoint.on('change', function (oldvalue, newvalue) {
   dataPunt.sp = parseFloat(newvalue).toFixed(2);
   dataPunt.time = moment().format(' h:mm:ss ')
 
-
-
   socket.emit('new-graph-data', dataPunt)
-
-  //ctreate new object and store this in londonTempData array
-  var help = new Object()
-  help.time = dataPunt.time
-  help.temp = dataPunt.temp
-  help.pi = dataPunt.pi
-  help.sp = dataPunt.sp
-  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
+  storePoint(dataPunt)
 });
 
-
+//----------------------PI or PWM ---------------------//
 
 ets.output_pi.on('change', function (oldvalue, newvalue) {
   console.log("KNX PI: value: %j %", newvalue);
@@ -136,18 +140,23 @@ ets.output_pi.on('change', function (oldvalue, newvalue) {
   dataPunt.pi = parseFloat(newvalue).toFixed(2);
   dataPunt.time = moment().format(' h:mm:ss ');
 
+  socket.emit('new-graph-data', dataPunt);
+  storePoint(dataPoint)
 
-
-  socket.emit('new-graph-data', dataPunt)
-//ctreate new object and store this in londonTempData array
-  var help = new Object()
-  help.time = dataPunt.time
-  help.temp = dataPunt.temp
-  help.pi = dataPunt.pi
-  help.sp = dataPunt.sp
-  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
 });
 
+ets.output_pwm.on('change', function (oldvalue, newvalue) {
+  console.log("KNX PI: value: %j %", newvalue);
+
+  dataPunt.pi = newvalue * 100;
+  dataPunt.time = moment().format(' h:mm:ss ');
+
+  socket.emit('new-graph-data', dataPunt);
+  storePoint(dataPoint)
+
+});
+
+//------------------------------------------------------------//
 
 //hvac mode is update by server
 
@@ -158,20 +167,8 @@ functionTemp.func.on('deltatemp', function(data){
   dataPunt.temp = dataPunt.temp + data.controller;
   dataPunt.time = moment().format(' h:mm:ss ');
 
-  /*
-  pusher.trigger('london-temp-chart', 'new-data', {
-    dataPoint: dataPunt
-  });
-  */
-  console.log(dataPunt)
   socket.emit('new-graph-data', dataPunt)
-
-  var help = new Object()
-  help.time = dataPunt.time
-  help.temp = dataPunt.temp
-  help.pi = dataPunt.pi
-  help.sp = dataPunt.sp
-  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
+  storePoint(dataPunt)
 });
 
 
@@ -186,7 +183,6 @@ functionTemp.func.on('deltatemp', function(data){
     socket.on('input_sp', function(data){
         var inp = parseInt(data.inp);
         var id = parseInt(data.id);
-      //ets.comf.write(inp);
       switch (id){
         case 1:
           console.log('eco cool: ' + inp);
@@ -199,6 +195,7 @@ functionTemp.func.on('deltatemp', function(data){
           break;
         case 4:
           console.log('comfort heat: ' + inp);
+          if(!test){ets.comf.write(inp);}
           break;
         case 5:
           console.log('standby heat: ' + inp);
@@ -213,24 +210,16 @@ functionTemp.func.on('deltatemp', function(data){
 // send to KNX and update graph
 
     socket.on('input_temp', function(data){
-      temp = parseInt(data.inp);
+      temp = parseFloat(data.inp).toFixed(2)
       console.log('sp: ' +  temp);
-      ets.ext_temp.write(temp);
+      if(!test){ets.ext_temp.write(temp);}
 
       dataPunt.temp = temp;
       dataPunt.time = moment().format(' h:mm:ss ');
-/*
 
-      pusher.trigger('london-temp-chart', 'new-data', {
-        dataPoint: dataPunt
-        });
-        */
-      var help = new Object()
-      help.time = dataPunt.time
-      help.temp = dataPunt.temp
-      help.pi = dataPunt.pi
-      help.sp = dataPunt.sp
-  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
+      socket.emit('new-graph-data', dataPunt)
+      storePoint(dataPunt)
+
       });
 
 //----used for button presses----//
@@ -238,7 +227,7 @@ functionTemp.func.on('deltatemp', function(data){
       //0 = OFF, 1 = heat, 2 = cool, 3 = auto
       var mode = parseInt(data);
         console.log('h/c/a mode: ' + mode);
-        //ets.hc_mode.write(mode);
+        if(!test){ets.hc_mode.write(mode);}
 
 
 
@@ -272,9 +261,11 @@ functionTemp.func.on('deltatemp', function(data){
       var mode = parseInt(data);
       //1 = comf, 2 = stdby, 3 = eco, 4 = protect
       console.log('hvac mode: ' + mode);
-      //ets.mode.write(mode);
+      if(!test){ets.mode.write(mode);}
 
     });
+
+///////////////////update DOM////////////////////
 
     //hvac mode is updated by knx
     ets.mode_fb.on('change', function (oldvalue, newvalue) {

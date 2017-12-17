@@ -8,6 +8,7 @@ var func = new EventEmitter();
 var delayMs = 1000 * 10;   //1 sec
 
 
+
 var delta = {
   controller: null,
   roomLoss: null
