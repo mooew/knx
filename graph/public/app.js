@@ -4,42 +4,44 @@
 
 $(document).ready(function() {
 
+
+///////////setpoints//////////////////////////////
     $("#sp-6-s").click(function(){
        var sp6 = $('#sp-6').val();
         console.log('sp6 economy heat: ' + sp6);
-        socket.emit('input_comf', {inp: sp6, id:6});
+        socket.emit('input_sp', {inp: sp6, id:6});
     });
 
     $("#sp-5-s").click(function(){
        var sp5 = $('#sp-5').val();
         console.log('sp5 standby heat: ' + sp5);
-        socket.emit('input_comf', {inp: sp5, id:5});
+        socket.emit('input_sp', {inp: sp5, id:5});
     });
 
     $("#sp-4-s").click(function(){
        var sp4 = $('#sp-4').val();
         console.log('sp4 comfort heat: ' + sp4);
-        socket.emit('input_comf', {inp: sp4, id:4});
+        socket.emit('input_sp', {inp: sp4, id:4});
     });
 
     $("#sp-3-s").click(function(){
        var sp3 = $('#sp-3').val();
         console.log('sp3 comfort cool: ' + sp3);
-        socket.emit('input_comf', {inp: sp3, id:3});
+        socket.emit('input_sp', {inp: sp3, id:3});
     });
 
     $("#sp-2-s").click(function(){
        var sp2 = $('#sp-2').val();
        //var idd = 2;
         console.log('sp2 standby cool: ' + sp2);
-        socket.emit('input_comf', {inp: sp2, id:2});
+        socket.emit('input_sp', {inp: sp2, id:2});
     });
 
     $("#sp-1-s").click(function(){
        var sp1 = $('#sp-1').val();
        //var idd = 1;
         console.log('sp1 standby cool: ' + sp1);
-        socket.emit('input_comf', {inp: sp1, id:1});
+        socket.emit('input_sp', {inp: sp1, id:1});
     });
 
 
@@ -56,14 +58,20 @@ $(document).ready(function() {
       weatherChartRef.resetZoom();
     });
 
-    //mode: off heat cool auto
+    $("#script").click(function(){
+      startScript();
+      socket.emit('script', 1);
+    });
+
+
+///////mode: off heat cool auto///////////////////
     $('#mode input').on('change', function() {
    //alert($('input[name=options]:checked', '#mode').val());
    socket.emit('mode',
     $('input[name=options]:checked', '#mode').val())
     });
 
-    //mode: comfort stdby eco protect
+////////mode: comfort stdby eco protect////////////
     $('#hvac input').on('change', function() {
    //alert($('input[name=options]:checked', '#hvac').val());
    socket.emit('hvac',
@@ -72,11 +80,19 @@ $(document).ready(function() {
 
 
 //update dom from the server
+//hvac mode is updated by knx
   socket.on('server-hvac-fb', function(data){
     //select = stringify(data)
     //1 = comf, 2 = stdby, 3 = eco, 4 = protect
     $("#hvac-" + data).prop('checked', true).trigger("click");
   })
+
+// heat/cool/auto mode is updated by knx
+socket.on('server-hc-fb', function(data){
+  //select = stringify(data)
+  //1 = comf, 2 = stdby, 3 = eco, 4 = protect
+  $("#mode-" + data).prop('checked', true).trigger("click");
+})
 
 
 
@@ -122,8 +138,10 @@ $(document).ready(function() {
       };
       xhr.send(JSON.stringify(payload));
     }
-
-
+////////////////////// SCRIPT ///////////////////////////////////:::
+function startScript(){
+  console.log('start')
+}
 
 ////////////////////// GRAFIEK ///////////////////////////////////:::
 
@@ -330,7 +348,7 @@ $(document).ready(function() {
     //now graph is visible after reloading!!
   }
 
-  channel = pusher.subscribe('london-temp-chart');
+//  channel = pusher.subscribe('london-temp-chart');
   //action on new event!?
 
 /*
@@ -374,7 +392,7 @@ $(document).ready(function() {
     weatherChartRef.data.datasets[1].data.push(newTempData.temperature);
     weatherChartRef.update();
   });
-*/
+
   channel.bind('new-data', function(data) {
     console.log(data);
     var newTempData = data.dataPoint;
@@ -386,6 +404,21 @@ $(document).ready(function() {
     weatherChartRef.update();
     console.log(weatherChartRef)
   });
+  */
+
+  socket.on('new-graph-data', function(data) {
+    console.log(data);
+    //var newTempData = data.dataPoint;
+    var newTempData = data; //test socket
+    console.log('new data is received');
+    weatherChartRef.data.labels.push(newTempData.time);
+    weatherChartRef.data.datasets[0].data.push(newTempData.sp);
+    weatherChartRef.data.datasets[1].data.push(newTempData.temp);
+    weatherChartRef.data.datasets[2].data.push(newTempData.pi);
+    weatherChartRef.update();
+    console.log(weatherChartRef)
+  });
+
 
 
 /* TEMP CODE FOR TESTING */

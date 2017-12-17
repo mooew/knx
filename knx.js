@@ -1,15 +1,18 @@
 //hallo
 var knx = require('knx');
 
-var dp1 = new knx.Datapoint({ga: '0/3/8', dpt: 'DPT5.001'});
-var pwm = new knx.Datapoint({ga: '0/3/8', dpt: 'DPT5.001'});
-var dp2 = new knx.Datapoint({ga: '0/3/2', dpt: 'DPT9.001'});
+var output_pi = new knx.Datapoint({ga: '0/3/8', dpt: 'DPT5.001'});
+//var pwm = new knx.Datapoint({ga: '0/3/8', dpt: 'DPT5.001'});
+var setpoint = new knx.Datapoint({ga: '0/3/2', dpt: 'DPT9.001'});
 var ext_temp = new knx.Datapoint({ga: '0/3/0', dpt: 'DPT9.001'});
 var comf = new knx.Datapoint({ga: '0/3/3', dpt: 'DPT9.001'});
 var mode_fb = new knx.Datapoint({ga: '0/3/4', dpt: 'DPT20.102'});
 var mode = new knx.Datapoint({ga: '0/3/5', dpt: 'DPT20.102'});
 
-var ets = {dp1, dp2, ext_temp, comf, mode_fb, mode}
+var hc_mode = new knx.Datapoint({ga: '0/3/9', dpt: 'DPT5.001'});
+var hc_mode_fb = new knx.Datapoint({ga: '0/3/10', dpt: 'DPT5.001'});
+
+var ets = {output_pi, setpoint, ext_temp, comf, mode_fb, mode, hc_mode, hc_mode_fb}
 
 
 var connection = knx.Connection({

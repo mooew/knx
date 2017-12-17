@@ -5,7 +5,7 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var dataPunt = require('./data').dataPoint;
 var moment = require('moment');
-var Pusher = require('pusher');
+
 var timer = require('./functions').timer;
 var functionTemp = require('./functionTemp');
 var knx = require('./functions').log_event;
@@ -14,13 +14,7 @@ var ets = require('../knx.js').ets
 
 
 
-var pusher = new Pusher({
-    appId: '426105',
-    key: '95be360cf53aab13f769',
-    secret: '164a62f9ce0d2f7ad82a',
-    cluster: 'eu',
-   encrypted: true
-});
+
 
 
 //App setup
@@ -85,80 +79,6 @@ app.get('/addTemperature', function(req,res){
 */
 
 
-//-------------------------------//
-//update graph through server KNX//
-//-------------------------------//
-
-
-ets.dp2.on('change', function (oldvalue, newvalue) {
-  console.log("KNX SP: value: %j °C", newvalue);
-
-  dataPunt.sp = parseFloat(newvalue).toFixed(2);
-  dataPunt.time = moment().format(' h:mm:ss ')
-
-  pusher.trigger('london-temp-chart', 'new-data', {
-    dataPoint: dataPunt
-  });
-  var help = new Object()
-  help.time = dataPunt.time
-  help.temp = dataPunt.temp
-  help.pi = dataPunt.pi
-  help.sp = dataPunt.sp
-  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
-  //console.log('londonTempData: ' + londonTempData.dataPoints[londonTempData.dataPoints.length-1].time)
-});
-
-
-
-ets.dp1.on('change', function (oldvalue, newvalue) {
-  console.log("KNX PI: value: %j %", newvalue);
-
-  dataPunt.pi = parseFloat(newvalue).toFixed(2);
-  dataPunt.time = moment().format(' h:mm:ss ');
-
-
-  pusher.trigger('london-temp-chart', 'new-data', {
-     dataPoint: dataPunt
-  });
-  var help = new Object()
-  help.time = dataPunt.time
-  help.temp = dataPunt.temp
-  help.pi = dataPunt.pi
-  help.sp = dataPunt.sp
-  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
-});
-
-//mode is updated by knx
-//0 = OFF, 1 = heat, 2 = cool, 3 = auto
-
-/*
-//hvac mode is updated by knx
-ets.mode_fb.on('change', function (oldvalue, newvalue) {
-//1 = comf, 2 = stdby, 3 = eco, 4 = protect
-socket.emit('server-hvac-fb', newvalue)
-});
-*/
-
-//hvac mode is update by server
-
-// functions
-//autoate the room temperature
-functionTemp.func.on('deltatemp', function(data){
-  console.log('deltatemp ontvangen: ' + data.controller)
-  dataPunt.temp = dataPunt.temp + data.controller;
-  dataPunt.time = moment().format(' h:mm:ss ');
-
-
-  pusher.trigger('london-temp-chart', 'new-data', {
-    dataPoint: dataPunt
-  });
-  var help = new Object()
-  help.time = dataPunt.time
-  help.temp = dataPunt.temp
-  help.pi = dataPunt.pi
-  help.sp = dataPunt.sp
-  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
-});
 
 
 
@@ -184,16 +104,109 @@ io.on('connection', (socket) => {
 
 console.log('made socket connection', socket.id);
 
+//-------------------------------//
+//update graph through server KNX//
+//-------------------------------//
+//////////////////new js file ////////////////////////////////////////////
+
+ets.setpoint.on('change', function (oldvalue, newvalue) {
+  console.log("KNX SP: value: %j °C", newvalue);
+
+  dataPunt.sp = parseFloat(newvalue).toFixed(2);
+  dataPunt.time = moment().format(' h:mm:ss ')
+
+
+
+  socket.emit('new-graph-data', dataPunt)
+
+  //ctreate new object and store this in londonTempData array
+  var help = new Object()
+  help.time = dataPunt.time
+  help.temp = dataPunt.temp
+  help.pi = dataPunt.pi
+  help.sp = dataPunt.sp
+  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
+});
+
+
+
+ets.output_pi.on('change', function (oldvalue, newvalue) {
+  console.log("KNX PI: value: %j %", newvalue);
+
+  dataPunt.pi = parseFloat(newvalue).toFixed(2);
+  dataPunt.time = moment().format(' h:mm:ss ');
+
+
+
+  socket.emit('new-graph-data', dataPunt)
+//ctreate new object and store this in londonTempData array
+  var help = new Object()
+  help.time = dataPunt.time
+  help.temp = dataPunt.temp
+  help.pi = dataPunt.pi
+  help.sp = dataPunt.sp
+  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
+});
+
+
+//hvac mode is update by server
+
+// functions
+//automate the room temperature
+functionTemp.func.on('deltatemp', function(data){
+  console.log('deltatemp ontvangen: ' + data.controller)
+  dataPunt.temp = dataPunt.temp + data.controller;
+  dataPunt.time = moment().format(' h:mm:ss ');
+
+  /*
+  pusher.trigger('london-temp-chart', 'new-data', {
+    dataPoint: dataPunt
+  });
+  */
+  console.log(dataPunt)
+  socket.emit('new-graph-data', dataPunt)
+
+  var help = new Object()
+  help.time = dataPunt.time
+  help.temp = dataPunt.temp
+  help.pi = dataPunt.pi
+  help.sp = dataPunt.sp
+  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
+});
+
+
+//////////////////new js file ////////////////////////////////////////////
+
+
 
 //----used for input fields----//
 
 // comfort temperature
 // the graph will be updated via response of KNX
-    socket.on('input_comf', function(data){
+    socket.on('input_sp', function(data){
         var inp = parseInt(data.inp);
         var id = parseInt(data.id);
-        console.log('temp: ' + inp + ' ' + id);
       //ets.comf.write(inp);
+      switch (id){
+        case 1:
+          console.log('eco cool: ' + inp);
+          break;
+        case 2:
+          console.log('standby cool: ' + inp);
+          break;
+        case 3:
+          console.log('comfort cool: ' + inp);
+          break;
+        case 4:
+          console.log('comfort heat: ' + inp);
+          break;
+        case 5:
+          console.log('standby heat: ' + inp);
+          break;
+        case 6:
+          console.log('eco heat: ' + inp);
+      }
+
   });
 
 // ext temperature
@@ -206,11 +219,12 @@ console.log('made socket connection', socket.id);
 
       dataPunt.temp = temp;
       dataPunt.time = moment().format(' h:mm:ss ');
-
+/*
 
       pusher.trigger('london-temp-chart', 'new-data', {
         dataPoint: dataPunt
         });
+        */
       var help = new Object()
       help.time = dataPunt.time
       help.temp = dataPunt.temp
@@ -220,11 +234,14 @@ console.log('made socket connection', socket.id);
       });
 
 //----used for button presses----//
-    socket.on('hvac', function(data){
+    socket.on('mode', function(data){
       //0 = OFF, 1 = heat, 2 = cool, 3 = auto
       var mode = parseInt(data);
-        console.log('mode: ' + mode);
-        ets.mode.write(mode);
+        console.log('h/c/a mode: ' + mode);
+        //ets.hc_mode.write(mode);
+
+
+
         /*
         if(mode === 0){
           //timer.setDelay(timer.getDelay() + 1000);
@@ -253,9 +270,9 @@ console.log('made socket connection', socket.id);
 
     socket.on('hvac', function(data){
       var mode = parseInt(data);
+      //1 = comf, 2 = stdby, 3 = eco, 4 = protect
       console.log('hvac mode: ' + mode);
-      //console.log(connection.connected)
-      // test --> socket.emit('server-mode-fb', mode)
+      //ets.mode.write(mode);
 
     });
 
@@ -264,5 +281,25 @@ console.log('made socket connection', socket.id);
     //1 = comf, 2 = stdby, 3 = eco, 4 = protect
     socket.emit('server-hvac-fb', newvalue)
     });
+
+    // heat/cool/auto mode is updated by knx
+    ets.hc_mode_fb.on('change', function (oldvalue, newvalue) {
+      //0 = OFF, 1 = heat, 2 = cool, 3 = auto
+    socket.emit('server-hc-fb', newvalue)
+    });
+
+    socket.on('script', function(data){
+      console.log(data)
+      if (functionTemp.timer.isStopped()) {
+        console.log('start timer');
+        functionTemp.timer.start();
+      } else {
+        console.log('stop timer');
+        functionTemp.timer.stop();
+      }
+    })
+
+
+
 
 });

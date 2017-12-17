@@ -12,13 +12,16 @@ var delta = {
   controller: null,
   roomLoss: null
 };
-
+var count = 0
 
 //var knx_json_obj ={'destination': dest, 'value': val, 'time':date };
 
 var timer = new Timer(function() {
-console.log('timer executed: ' + dataPunt.pi);
-delta.controller = (dataPunt.pi/200);
+count = count + 1
+console.log(count)
+//console.log('timer executed: ' + dataPunt.pi);
+//delta.controller = (dataPunt.pi/200);
+delta.controller = 1;
 
 func.emit('deltatemp', delta);
 
