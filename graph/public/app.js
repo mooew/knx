@@ -150,6 +150,14 @@ function startScript(){
                       title:{
                           text: "Chart.js Time Scale"
                       },
+                      tooltips: {
+						mode: 'index',
+						intersect: true,
+					},
+          hover: {
+						mode: 'index',
+						intersect: true
+					},
               scales: {
                 xAxes: [{
                   type: "time",
@@ -239,19 +247,19 @@ function startScript(){
                 label: "setpoint",
                 fill: false,
                 lineTension: 0,
-                backgroundColor: "rgba(29,128,165,0.4)",
-                borderColor: "rgba(29,128,165,1)",
+                backgroundColor: "rgba(29,165,24,0.4)",
+                borderColor: "rgba(29,165,24,0.4)",
                 borderCapStyle: 'butt',
                 borderDash: [],
                 borderDashOffset: 0.0,
                 borderJoinStyle: 'miter',
-                pointBorderColor: "rgba(75,192,192,1)",
+                pointBorderColor: "rgba(29,165,24,0.4)",
                 pointBackgroundColor: "#fff",
                 pointBorderWidth: 1,
                 pointHoverRadius: 5,
-                pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                pointHoverBorderColor: "rgba(220,220,220,1)",
-                pointHoverBorderWidth: 2,
+                pointHoverBackgroundColor: "rgba(29,165,24,0.4)",
+                pointHoverBorderColor: "rgba(29,165,24,0.4)",
+                pointHoverBorderWidth: 5,
                 pointRadius: 1,
                 pointHitRadius: 1,
                 data: [],           //y-axes
@@ -271,13 +279,13 @@ function startScript(){
                 borderDash: [],
                 borderDashOffset: 0.0,
                 borderJoinStyle: 'miter',
-                pointBorderColor: "rgba(200,192,200,1)",
+                pointBorderColor: "rgba(156,107,119,0.4)",
                 pointBackgroundColor: "#fff",
                 pointBorderWidth: 1,
-                pointHoverRadius: 1,
-                pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                pointHoverBorderColor: "rgba(220,220,220,1)",
-                pointHoverBorderWidth: 2,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(156,107,119,0.4)",
+                pointHoverBorderColor: "rgba(156,107,119,0.4)",
+                pointHoverBorderWidth: 5,
                 pointRadius: 1,
                 pointHitRadius: 1,
                 data: [],           //y-axes
@@ -303,7 +311,7 @@ function startScript(){
                 pointHoverRadius: 5,
                 pointHoverBackgroundColor: "#660000",
                 pointHoverBorderColor: "#660000",
-                pointHoverBorderWidth: 2,
+                pointHoverBorderWidth: 5,
                 pointRadius: 1,
                 pointHitRadius: 1,
                 data: [],         //here comes the data
@@ -328,7 +336,7 @@ function startScript(){
                 pointHoverRadius: 5,
                 pointHoverBackgroundColor: "#000066",
                 pointHoverBorderColor: "#000066",
-                pointHoverBorderWidth: 2,
+                pointHoverBorderWidth: 5,
                 pointRadius: 1,
                 pointHitRadius: 1,
                 data: [],         //here comes the data
@@ -356,78 +364,27 @@ function startScript(){
     chartConfig.datasets[1].data = respData.dataPoints.map(dataPoint => dataPoint.temp);
     chartConfig.datasets[2].data = respData.dataPoints.map(dataPoint => dataPoint.pi);
     chartConfig.datasets[3].data = respData.dataPoints.map(dataPoint => dataPoint.pi_cool);
-    console.log('chartConfig labels: ' + chartConfig.labels)
-    console.log('chartConfig 0: ' + chartConfig.datasets[0].data)
-    console.log('chartConfig 1: ' + chartConfig.datasets[1].data)
-//comment because after refresh data is mixed
-//now after refresh everything is gone
 
    renderWeatherChart(chartConfig)
     //now graph is visible after reloading!!
   }
 
-//  channel = pusher.subscribe('london-temp-chart');
-  //action on new event!?
-
-/*
-  channel.bind('new-temperature', function(data) {
-    var newTempData = data.dataPoint;
-    //console.log(data);
-    //alert('An event was triggered with message: ' + data.dataPoint);
-    /*
-    if(weatherChartRef.data.labels.length > 30){
-      weatherChartRef.data.labels.shift();
-      weatherChartRef.data.datasets[0].data.shift();
-      weatherChartRef.data.datasets[1].data.shift();
-    }
-
-    console.log('update');
-    while(weatherChartRef.data.datasets[0].data.length < weatherChartRef.data.labels.length){
-    weatherChartRef.data.datasets[0].data.push(null);
-    };
-    weatherChartRef.data.labels.push(newTempData.time);
-    weatherChartRef.data.datasets[0].data.push(newTempData.temperature);
-    weatherChartRef.update();
-    console.log(weatherChartRef.data.datasets[0].data);
-  });
-
-  channel.bind('new-temperature1', function(data) {
-    var newTempData = data.dataPoint;
-    // if lot sof data scroll the chart
-    //console.log(data);
-    //alert('An event was triggered with message: ' + data.dataPoint);
-    /*
-    if(weatherChartRef.data.labels.length > 15){
-      weatherChartRef.data.labels.shift();
-      weatherChartRef.data.datasets[1].data.shift();
-    }
-
-    console.log('update');
-    while(weatherChartRef.data.datasets[1].data.length < weatherChartRef.data.labels.length){
-    weatherChartRef.data.datasets[1].data.push(null);
-    };
-    weatherChartRef.data.labels.push(newTempData.time);
-    weatherChartRef.data.datasets[1].data.push(newTempData.temperature);
-    weatherChartRef.update();
-  });
-
-  channel.bind('new-data', function(data) {
-    console.log(data);
-    var newTempData = data.dataPoint;
-    console.log('new data is received');
-    weatherChartRef.data.labels.push(newTempData.time);
-    weatherChartRef.data.datasets[0].data.push(newTempData.sp);
-    weatherChartRef.data.datasets[1].data.push(newTempData.temp);
-    weatherChartRef.data.datasets[2].data.push(newTempData.pi);
-    weatherChartRef.update();
-    console.log(weatherChartRef)
-  });
-  */
 
   socket.on('new-graph-data', function(data) {
     console.log(data);
     //var newTempData = data.dataPoint;
     var newTempData = data; //test socket
+
+/*
+    if(weatherChartRef.data.labels.length > 3){
+      weatherChartRef.data.labels.shift();
+      weatherChartRef.data.datasets[0].data.shift();
+      weatherChartRef.data.datasets[1].data.shift();
+      weatherChartRef.data.datasets[2].data.shift();
+      weatherChartRef.data.datasets[3].data.shift();
+    }
+*/
+
     console.log('new data is received');
     weatherChartRef.data.labels.push(newTempData.time);
     weatherChartRef.data.datasets[0].data.push(newTempData.sp);
