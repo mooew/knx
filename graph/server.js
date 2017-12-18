@@ -11,7 +11,7 @@ var functionTemp = require('./functionTemp');
 var knx = require('./functions').log_event;
 var ets = require('../knx.js').ets
 //var connection = require('../knx.js').connection
-var test = true;
+var test = false;
 
 
 
@@ -142,18 +142,19 @@ ets.output_pi_heat.on('change', function (oldvalue, newvalue) {
   dataPunt.time = moment().format(' h:mm:ss ');
 
   socket.emit('new-graph-data', dataPunt);
-  storePoint(dataPoint)
+  storePoint(dataPunt)
 
 });
 
 ets.output_pwm_heat.on('change', function (oldvalue, newvalue) {
-  console.log("KNX PI: value: %j %", newvalue);
 
+  newvalue = newvalue ? 1 : 0;
+  console.log("KNX PI: value: %j %", newvalue);
   dataPunt.pi = newvalue * 100;
   dataPunt.time = moment().format(' h:mm:ss ');
 
   socket.emit('new-graph-data', dataPunt);
-  storePoint(dataPoint)
+  storePoint(dataPunt)
 
 });
 
@@ -164,7 +165,7 @@ ets.output_pi_cool.on('change', function (oldvalue, newvalue) {
   dataPunt.time = moment().format(' h:mm:ss ');
 
   socket.emit('new-graph-data', dataPunt);
-  storePoint(dataPoint)
+  storePoint(dataPunt)
 
 });
 
