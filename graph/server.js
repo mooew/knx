@@ -11,7 +11,7 @@ var functionTemp = require('./functionTemp');
 //var knx = require('./functions').log_event;
 var ets = require('../knx.js').ets
 //var connection = require('../knx.js').connection
-var test = true;
+var test = false;
 
 
 function storePoint(data){
@@ -309,9 +309,11 @@ console.log('made socket connection', socket.id);
   //automate the room temperature
   functionTemp.func.on('deltatemp', function(data){
     console.log('deltatemp ontvangen: ' + data.controller)
-    console.log( parseInt(dataPunt.temp))
-    dataPunt.temp = dataPunt.temp + data.controller;
+    console.log( Number(dataPunt.temp))
+    dataPunt.temp = Number(dataPunt.temp) + Number(data.controller);
     dataPunt.time = moment().format(' h:mm:ss ');
+
+//send temp to the bus
 
     io.emit('new-graph-data', dataPunt)
     storePoint(dataPunt)

@@ -24,14 +24,24 @@ console.log(count)
 console.log(dataPunt.pi_cool)
 //console.log('timer executed: ' + dataPunt.pi);
 /////////////////////////HEATING//////////////////////////////
+if(dataPunt.pi !== null){
 
+delta.controller = (dataPunt.pi_cool/(200));
 
-console.log('ok')
-delta.controller = (dataPunt.pi_cool/200);
+console.log('temp goes up: ' + delta.controller);
+
+}
+if(dataPunt.pi_cool !== null){
+
+delta.controller = (dataPunt.pi_cool/(-200));
 
 console.log('temp goes down: ' + delta.controller);
 
+}
+
 ///////////////////////COOLING/////////////////////////////////
+
+
 
 func.emit('deltatemp', delta);
 

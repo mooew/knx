@@ -1,7 +1,7 @@
 var   temp = 20,
       time = null,
       pi = null,
-      pi_cool = 40,
+      pi_cool = null,
       sp = null;
 
 var dataPoint = {
