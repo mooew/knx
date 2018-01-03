@@ -15,6 +15,7 @@ var con = require('../knx.js').connection
 var test = true;     //true if no knx is availeble
 
 
+
 function storePoint(data){
   //ctreate new object and store this in logData array
   console.log(data)
@@ -95,12 +96,18 @@ var server = app.listen(9000, function(){
 
 
 ////////////////////////////////////////////
-/////// Socket setup & pass server /////////
+/////// SOCKET setup & pass server /////////
 ////////////////////////////////////////////
 var io = socket(server);
 io.on('connection', (socket) => {
 
   console.log('made socket connection', socket.id);
+
+  function updateGraph(data){
+    console.log("received: " + data)
+    io.emit('new-graph-data', data)
+    storePoint(data)
+  }
 
 //-------------------------------//
 //update graph through server KNX//
@@ -144,8 +151,11 @@ function ldexp(mantissa, exponent) {
             dataPunt.sp = inp;
             dataPunt.time = moment().format(' h:mm:ss ');
 
-            io.emit('new-graph-data', dataPunt)
-            storePoint(dataPunt)
+///////////////////////////////////////////////////
+              updateGraph(dataPunt)
+//            io.emit('new-graph-data', dataPunt)
+//            storePoint(dataPunt)
+///////////////////////////////////////////////////
 
             }
           break;
@@ -186,8 +196,11 @@ function ldexp(mantissa, exponent) {
       dataPunt.temp = temp;
       dataPunt.time = moment().format(' h:mm:ss ');
 
-      io.emit('new-graph-data', dataPunt)
-      storePoint(dataPunt)
+///////////////////////////////////////////////////
+      updateGraph(dataPunt)
+//      io.emit('new-graph-data', dataPunt)
+//      storePoint(dataPunt)
+///////////////////////////////////////////////////
 
       });
 
@@ -269,8 +282,9 @@ function ldexp(mantissa, exponent) {
     dataPunt.sp = parseFloat(newvalue).toFixed(2);
     dataPunt.time = moment().format(' h:mm:ss ')
 
-    io.emit('new-graph-data', dataPunt)
-    storePoint(dataPunt)
+    updateGraph(dataPunt)
+
+
   });
 
 
@@ -282,8 +296,8 @@ function ldexp(mantissa, exponent) {
     dataPunt.pi = newvalue.toFixed(2);
     dataPunt.time = moment().format(' h:mm:ss ');
 
-    io.emit('new-graph-data', dataPunt);
-    storePoint(dataPunt)
+    updateGraph(dataPunt)
+
 
   });
 
@@ -295,8 +309,8 @@ function ldexp(mantissa, exponent) {
     dataPunt.pi = newvalue * 100;
     dataPunt.time = moment().format(' h:mm:ss ');
 
-    io.emit('new-graph-data', dataPunt);
-    storePoint(dataPunt)
+    updateGraph(dataPunt)
+
 
   });
 
@@ -307,8 +321,7 @@ function ldexp(mantissa, exponent) {
     dataPunt.pi_cool = newvalue;
     dataPunt.time = moment().format(' h:mm:ss ');
 
-    io.emit('new-graph-data', dataPunt);
-    storePoint(dataPunt)
+    updateGraph(dataPunt)
 
   });
 
@@ -320,8 +333,8 @@ function ldexp(mantissa, exponent) {
     dataPunt.pi_cool = newvalue * 100;
     dataPunt.time = moment().format(' h:mm:ss ');
 
-    io.emit('new-graph-data', dataPunt);
-    storePoint(dataPunt)
+    updateGraph(dataPunt)
+
 
   });
 
@@ -335,6 +348,6 @@ function ldexp(mantissa, exponent) {
     dataPunt.temp = Number(dataPunt.temp) + Number(data.controller);
     dataPunt.time = moment().format(' h:mm:ss ');
 
-    io.emit('new-graph-data', dataPunt)
-    storePoint(dataPunt)
+    updateGraph(dataPunt)
+
   });
