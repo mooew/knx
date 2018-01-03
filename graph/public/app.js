@@ -181,7 +181,7 @@ function startScript(){
                     labelString: 'value'
                   },
                   ticks: {
-                    suggestedMin: 10,
+                    suggestedMin: 0,
                     suggestedMax: 30
                 }
               },{
@@ -200,7 +200,27 @@ function startScript(){
                 },
                 ticks: {
                   suggestedMin: 0,
-                  suggestedMax: 500,
+                  suggestedMax: 800,
+                  display: false,
+              }
+
+              },{
+                //y-as 3
+                position: "right",
+                id: "y-axis-3",
+                // grid line settings
+                gridLines: {
+                    drawOnChartArea: false, // only want the grid lines for one axis to show up
+                    drawBorder: false,
+                    display: false,
+                },
+                scaleLabel: {
+                  display: false,
+                  labelString: 'value'
+                },
+                ticks: {
+                  suggestedMin: -102,
+                  suggestedMax: 698,
                   display: false,
               }
 
@@ -342,7 +362,7 @@ function startScript(){
                 data: [],         //here comes the data
                 spanGaps: true,
                 steppedLine: true,
-                yAxisID: "y-axis-2",
+                yAxisID: "y-axis-3",
 
             },
 

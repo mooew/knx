@@ -10,12 +10,13 @@ var moment = require('moment');
 var functionTemp = require('./functionTemp');
 //var knx = require('./functions').log_event;
 var ets = require('../knx.js').ets
-//var connection = require('../knx.js').connection
-var test = false;
+var con = require('../knx.js').connection
+
+var test = true;     //true if no knx is availeble
 
 
 function storePoint(data){
-  //ctreate new object and store this in londonTempData array
+  //ctreate new object and store this in logData array
   console.log(data)
   var help = new Object()
   help.time = data.time
@@ -23,7 +24,7 @@ function storePoint(data){
   help.pi = data.pi
   help.pi_cool = data.pi_cool
   help.sp = data.sp
-  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
+  logData.dataPoints[logData.dataPoints.length] = help
 }
 
 
@@ -35,25 +36,16 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-var londonTempData = {
-    city: 'London',
-    unit: 'celsius',
-    dataPoints: [
-
-
-
-
-    ]
+var logData = {
+    dataPoints: []
   }
-app.get('/ets', function(req, res){
-  res.render('ets');
-})
+
+
 
 //API//
 app.get('/getTemperature', function(req,res){
-  res.send(londonTempData);
-  console.log('/getTemperature: ' + londonTempData.dataPoints[londonTempData.dataPoints.length - 1].time)
-
+  res.send(logData);
+  console.log('/getTemperature: ')
 });
 
 //------------------------------------//
@@ -72,15 +64,13 @@ app.get('/addTemperature', function(req,res){
 //      time: time
       time: moment().format(' h:mm:ss ')
     };
-    //londonTempData.dataPoints.push(newDataPoint);         //ad new datapoint to array
+    //logData.dataPoints.push(newDataPoint);         //ad new datapoint to array
     //trigger event event and send newDataPoint
     pusher.trigger('london-temp-chart', 'new-temperature', {
       dataPoint: newDataPoint
     });
 
-
     res.send({success:true});
-
 
   }else{
     res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - temperature & time.'});
@@ -88,9 +78,6 @@ app.get('/addTemperature', function(req,res){
 });
 
 */
-
-
-
 
 
 // Error Handler for 404 Pages
@@ -113,8 +100,7 @@ var server = app.listen(9000, function(){
 var io = socket(server);
 io.on('connection', (socket) => {
 
-console.log('made socket connection', socket.id);
-
+  console.log('made socket connection', socket.id);
 
 //-------------------------------//
 //update graph through server KNX//
@@ -122,13 +108,15 @@ console.log('made socket connection', socket.id);
 //////////////////new js file ////////////////////////////////////////////
 
 
-//------------------------------------------------------------//
-
-
-
-
 //////////////////new js file ////////////////////////////////////////////
 
+function ldexp(mantissa, exponent) {
+   return exponent > 1023 // avoid multiplying by infinity
+        ? mantissa * Math.pow(2, 1023) * Math.pow(2, exponent - 1023)
+        : exponent < -1074 // avoid multiplying by zero
+        ? mantissa * Math.pow(2, -1074) * Math.pow(2, exponent + 1074)
+        : mantissa * Math.pow(2, exponent);
+}
 
 
 //----used for input fields----//
@@ -155,8 +143,10 @@ console.log('made socket connection', socket.id);
           if(test){
             dataPunt.sp = inp;
             dataPunt.time = moment().format(' h:mm:ss ');
-            socket.emit('new-graph-data', dataPunt)
+
+            io.emit('new-graph-data', dataPunt)
             storePoint(dataPunt)
+
             }
           break;
         case 5:
@@ -164,9 +154,26 @@ console.log('made socket connection', socket.id);
           break;
         case 6:
           console.log('eco heat: ' + inp);
-      }
 
-  });
+
+//test//
+          con.read("0/0/7", (src, responsevalue) => {
+            var buf = responsevalue
+
+            var sign     =  buf[0] >> 7;
+            var exponent = (buf[0] & 0b01111000) >> 3;
+            var mantissa = 256 * (buf[0] & 0b00000111) + buf[1];
+
+
+          console.log(ldexp((0.01*mantissa), exponent));
+
+         });
+//test//
+
+
+}   //end switch
+
+}); //end socket setpoints
 
 // ext temperature
 // send to KNX and update graph
@@ -179,7 +186,7 @@ console.log('made socket connection', socket.id);
       dataPunt.temp = temp;
       dataPunt.time = moment().format(' h:mm:ss ');
 
-      socket.emit('new-graph-data', dataPunt)
+      io.emit('new-graph-data', dataPunt)
       storePoint(dataPunt)
 
       });
@@ -232,13 +239,13 @@ console.log('made socket connection', socket.id);
     //hvac mode is updated by knx
     ets.mode_fb.on('change', function (oldvalue, newvalue) {
     //1 = comf, 2 = stdby, 3 = eco, 4 = protect
-    socket.emit('server-hvac-fb', newvalue)
+    io.emit('server-hvac-fb', newvalue)
     });
 
     // heat/cool/auto mode is updated by knx
     ets.hc_mode_fb.on('change', function (oldvalue, newvalue) {
       //0 = OFF, 1 = heat, 2 = cool, 3 = auto
-    socket.emit('server-hc-fb', newvalue)
+    io.emit('server-hc-fb', newvalue)
     });
 
     socket.on('script', function(data){
@@ -251,7 +258,7 @@ console.log('made socket connection', socket.id);
         functionTemp.timer.stop();
       }
     })
-  });
+  });   //io.on socket end
 
 
   //--------------------setpoint--------------------------//
@@ -267,8 +274,8 @@ console.log('made socket connection', socket.id);
   });
 
 
-  //----------------------PI or PWM ---------------------//
-
+  //----------------listen to KNX for PI or PWM ---------------------//
+//PI HEAT//
   ets.output_pi_heat.on('change', function (oldvalue, newvalue) {
     console.log("KNX PI: value: %j %", newvalue);
 
@@ -280,6 +287,7 @@ console.log('made socket connection', socket.id);
 
   });
 
+//PWM HEAT//
   ets.output_pwm_heat.on('change', function (oldvalue, newvalue) {
 
     newvalue = newvalue ? 1 : 0;
@@ -292,10 +300,24 @@ console.log('made socket connection', socket.id);
 
   });
 
+//PI COOL//
   ets.output_pi_cool.on('change', function (oldvalue, newvalue) {
     console.log("KNX PI: value: %j %", newvalue);
 
     dataPunt.pi_cool = newvalue;
+    dataPunt.time = moment().format(' h:mm:ss ');
+
+    io.emit('new-graph-data', dataPunt);
+    storePoint(dataPunt)
+
+  });
+
+//PWM COOL//
+  ets.output_pwm_cool.on('change', function (oldvalue, newvalue) {
+
+    newvalue = newvalue ? 1 : 0;
+    console.log("KNX PI: value: %j %", newvalue);
+    dataPunt.pi_cool = newvalue * 100;
     dataPunt.time = moment().format(' h:mm:ss ');
 
     io.emit('new-graph-data', dataPunt);
@@ -312,8 +334,6 @@ console.log('made socket connection', socket.id);
     console.log( Number(dataPunt.temp))
     dataPunt.temp = Number(dataPunt.temp) + Number(data.controller);
     dataPunt.time = moment().format(' h:mm:ss ');
-
-//send temp to the bus
 
     io.emit('new-graph-data', dataPunt)
     storePoint(dataPunt)
