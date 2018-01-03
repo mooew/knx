@@ -1,91 +1,29 @@
-//test
-var express = require('express');
-
-var path = require('path');
-var bodyParser = require('body-parser');
+var socket = require('socket.io');
 var dataPunt = require('./data').dataPoint;
 var logData = require('./data').logData;
 var moment = require('moment');
-
-//var timer = require('./functions').timer;
 var functionTemp = require('./functionTemp');
-//var knx = require('./functions').log_event;
 var ets = require('../knx.js').ets
 var con = require('../knx.js').connection
+var server = require('./server.js').server
+
+var test = true;     //true if no knx is availeble
+
+function storePoint(data){
+  //ctreate new object and store this in logData array
+  console.log(data)
+  var help = new Object()
+  help.time = data.time
+  help.temp = data.temp
+  help.pi = data.pi
+  help.pi_cool = data.pi_cool
+  help.sp = data.sp
+  logData.dataPoints[logData.dataPoints.length] = help
+}
 
 
 
 
-
-
-
-
-
-//App setup
-var app = express();
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
-
-
-
-
-
-//API//
-app.get('/getTemperature', function(req,res){
-  res.send(logData);
-  console.log('/getTemperature: ')
-});
-
-//------------------------------------//
-//update graph throug http GET request//
-//------------------------------------//
-/*
-app.get('/addTemperature', function(req,res){
-
-  var temp = parseInt(req.query.temperature);
-  var time = parseInt(req.query.time);
-  if(temp && time && !isNaN(temp) && !isNaN(time)){
-
-
-    var newDataPoint = {
-      temp: temp,
-//      time: time
-      time: moment().format(' h:mm:ss ')
-    };
-    //logData.dataPoints.push(newDataPoint);         //ad new datapoint to array
-    //trigger event event and send newDataPoint
-    pusher.trigger('london-temp-chart', 'new-temperature', {
-      dataPoint: newDataPoint
-    });
-
-    res.send({success:true});
-
-  }else{
-    res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - temperature & time.'});
-  }
-});
-
-*/
-
-
-// Error Handler for 404 Pages
-app.use(function(req, res, next) {
-    var error404 = new Error('Route Not Found');
-    error404.status = 404;
-    next(error404);
-});
-
-
-
-var server = app.listen(9000, function(){
-  console.log('Example app listening on port 9000!')
-});
-
-module.exports.app = app;
-module.exports.server = server;
-/*
 ////////////////////////////////////////////
 /////// SOCKET setup & pass server /////////
 ////////////////////////////////////////////
@@ -226,7 +164,7 @@ function ldexp(mantissa, exponent) {
         else if (mode === 3) {
 
         }
-
+*/
 
     });
 
@@ -342,4 +280,3 @@ function ldexp(mantissa, exponent) {
     updateGraph(dataPunt)
 
   });
-*/

@@ -12,4 +12,9 @@ var dataPoint = {
   sp: sp
 }
 
+var logData = {
+    dataPoints: []
+  }
+
 module.exports.dataPoint = dataPoint;
+module.exports.logData = logData;
