@@ -58,9 +58,22 @@ $(document).ready(function() {
       weatherChartRef.resetZoom();
     });
 
+    $("#delete").click(function(){
+      //socket.emit('script', {id:2});
+      weatherChartRef.data.labels.splice(0,5);
+      weatherChartRef.data.datasets[0].data.splice(0,5);
+      weatherChartRef.data.datasets[1].data.splice(0,5);
+      weatherChartRef.data.datasets[2].data.splice(0,5);
+      weatherChartRef.data.datasets[3].data.splice(0,5);
+
+
+      weatherChartRef.update();
+
+    });
+
     $("#script").click(function(){
       startScript();
-      socket.emit('script', 1);
+      socket.emit('script', {id:1});
     });
 
 
@@ -393,7 +406,8 @@ function startScript(){
   socket.on('new-graph-data', function(data) {
     console.log(data);
     //var newTempData = data.dataPoint;
-    var newTempData = data; //test socket
+
+  var newTempData = data; //test socket
 
 /*
     if(weatherChartRef.data.labels.length > 3){
@@ -405,12 +419,15 @@ function startScript(){
     }
 */
 
+
     console.log('new data is received');
     weatherChartRef.data.labels.push(newTempData.time);
     weatherChartRef.data.datasets[0].data.push(newTempData.sp);
     weatherChartRef.data.datasets[1].data.push(newTempData.temp);
     weatherChartRef.data.datasets[2].data.push(newTempData.pi);
     weatherChartRef.data.datasets[3].data.push(newTempData.pi_cool);
+
+
     weatherChartRef.update();
     console.log(weatherChartRef)
   });

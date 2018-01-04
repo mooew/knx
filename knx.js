@@ -1,4 +1,3 @@
-//hallo
 var knx = require('knx');
 
 var output_pi_heat = new knx.Datapoint({ga: '0/0/1', dpt: 'DPT5.001'});
@@ -12,6 +11,9 @@ var ext_temp = new knx.Datapoint({ga: '0/0/5', dpt: 'DPT9.001'});
 
 
 var comf = new knx.Datapoint({ga: '0/0/6', dpt: 'DPT9.001'});
+
+
+
 var act_setpoint = new knx.Datapoint({ga: '0/0/7', dpt: 'DPT9.001'});
 
 var mode_fb = new knx.Datapoint({ga: '0/0/9', dpt: 'DPT20.102'});

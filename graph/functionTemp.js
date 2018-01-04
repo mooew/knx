@@ -24,19 +24,21 @@ console.log(count)
 console.log(dataPunt.pi_cool)
 //console.log('timer executed: ' + dataPunt.pi);
 /////////////////////////HEATING//////////////////////////////
-if(dataPunt.pi !== null){
+if(dataPunt.pi > 0){
 
-delta.controller = (dataPunt.pi_cool/(200));
+delta.controller = (dataPunt.pi/(200));
 
 console.log('temp goes up: ' + delta.controller);
 
 }
-if(dataPunt.pi_cool !== null){
+else if(dataPunt.pi_cool > 0 ){
 
 delta.controller = (dataPunt.pi_cool/(-200));
 
 console.log('temp goes down: ' + delta.controller);
 
+}else{
+  delta.controller = 0;
 }
 
 ///////////////////////COOLING/////////////////////////////////
