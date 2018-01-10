@@ -23,6 +23,9 @@ function storePoint(data){
 
   help.sp = data.sp
 
+  help.heat_act = data.heat_act
+  help.cool_act = data.cool_act
+
   logData.dataPoints[logData.dataPoints.length] = help
 }
 
@@ -276,6 +279,63 @@ ets.output_pwm_cool.on('change', function (oldvalue, newvalue) {
     updateGraph(dataPunt)
   });
 
+//HEAT and COOL active//
+ets.heat_act.on('change', function (oldvalue, newvalue) {
+  console.log('old: ' + dataPunt.cool_act)
+  console.log('new: ' + newvalue)
+    newvalue = newvalue ? 1 : 0;
+    oldvalue = oldvalue ? 1 : 0;
+
+    if(!newvalue){
+      if(newvalue !== dataPunt.heat_act){
+        dataPunt.heat_act = 1;
+        dataPunt.time = moment().format(' h:mm:ss ');
+        updateGraph(dataPunt)
+        dataPunt.heat_act = null;
+        dataPunt.time = moment().add({seconds:0.01}).format(' h:mm:ss ');
+        updateGraph(dataPunt)
+
+      }else{
+        dataPunt.heat_act = null;
+        dataPunt.time = moment().format(' h:mm:ss ');
+        updateGraph(dataPunt)
+      }
+
+    }else{
+      dataPunt.heat_act = newvalue;
+      dataPunt.time = moment().format(' h:mm:ss ');
+      updateGraph(dataPunt)
+    }
+})
+
+ets.cool_act.on('change', function (oldvalue, newvalue) {
+console.log('old: ' + dataPunt.cool_act)
+console.log('new: ' + newvalue)
+
+    newvalue = newvalue ? 1 : 0;
+    oldvalue = oldvalue ? 1 : 0;
+
+    if(!newvalue){
+      if(newvalue !== dataPunt.cool_act){
+        dataPunt.cool_act = 1;
+        dataPunt.time = moment().format(' h:mm:ss ');
+        updateGraph(dataPunt)
+        dataPunt.cool_act = null;
+        dataPunt.time = moment().add({seconds:0.01}).format(' h:mm:ss ');
+        updateGraph(dataPunt)
+
+      }else{
+        dataPunt.cool_act = null;
+        dataPunt.time = moment().format(' h:mm:ss ');
+        updateGraph(dataPunt)
+      }
+
+    }else{
+      dataPunt.cool_act = newvalue;
+      dataPunt.time = moment().format(' h:mm:ss ');
+      updateGraph(dataPunt)
+    }
+})
 
 
 // functions

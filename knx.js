@@ -43,7 +43,15 @@ var ets = {
   output_pwm_cool_2,
 
   act_setpoint,
-  ext_temp, comf, mode_fb, mode, hc_mode, hc_mode_fb}
+  ext_temp, comf,
+
+  mode_fb,
+  mode,
+  hc_mode,
+  hc_mode_fb,
+
+  heat_act,
+  cool_act}
 
 
 var connection = knx.Connection({

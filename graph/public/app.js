@@ -244,7 +244,28 @@ function startScript(){
                   display: false,
               }
 
-              }]
+              },{
+                //y-as 4
+                position: "right",
+                id: "y-axis-4",
+                // grid line settings
+                gridLines: {
+                    drawOnChartArea: false, // only want the grid lines for one axis to show up
+                    drawBorder: false,
+                    display: false,
+                },
+                scaleLabel: {
+                  display: false,
+                  labelString: 'value'
+                },
+                ticks: {
+                  suggestedMin: -200,
+                  suggestedMax: 598,
+                  display: false,
+              }
+
+              }
+            ]
               },
         // Container for pan options
         pan: {
@@ -435,6 +456,56 @@ function startScript(){
                 yAxisID: "y-axis-3",
 
             },
+            {
+                label: "heating",
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "#660000",
+                borderColor: "#660000",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "#660000",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "#660000",
+                pointHoverBorderColor: "#660000",
+                pointHoverBorderWidth: 5,
+                pointRadius: 1,
+                pointHitRadius: 1,
+                data: [],         //here comes the data
+                spanGaps: false,
+                steppedLine: true,
+                yAxisID: "y-axis-4",
+
+            },
+            {
+                label: "cooling",
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "#000066",
+                borderColor: "#000066",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "#000066",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "#000066",
+                pointHoverBorderColor: "#000066",
+                pointHoverBorderWidth: 5,
+                pointRadius: 1,
+                pointHitRadius: 1,
+                data: [],         //here comes the data
+                spanGaps: false,
+                steppedLine: true,
+                yAxisID: "y-axis-4",
+
+            },
 
         ]
     };
@@ -456,6 +527,8 @@ function startScript(){
     chartConfig.datasets[3].data = respData.dataPoints.map(dataPoint => dataPoint.pi_cool);
     chartConfig.datasets[4].data = respData.dataPoints.map(dataPoint => dataPoint.pi_heat_2);
     chartConfig.datasets[5].data = respData.dataPoints.map(dataPoint => dataPoint.pi_cool_2);
+    chartConfig.datasets[6].data = respData.dataPoints.map(dataPoint => dataPoint.heat_act);
+    chartConfig.datasets[7].data = respData.dataPoints.map(dataPoint => dataPoint.cool_act);
 
 
    renderWeatherChart(chartConfig)
@@ -488,7 +561,8 @@ function startScript(){
     weatherChartRef.data.datasets[3].data.push(newTempData.pi_cool);
     weatherChartRef.data.datasets[4].data.push(newTempData.pi_heat_2);
     weatherChartRef.data.datasets[5].data.push(newTempData.pi_cool_2);
-
+    weatherChartRef.data.datasets[6].data.push(newTempData.heat_act);
+    weatherChartRef.data.datasets[7].data.push(newTempData.cool_act);
 
     weatherChartRef.update();
     //console.log(weatherChartRef)
