@@ -65,7 +65,8 @@ $(document).ready(function() {
       weatherChartRef.data.datasets[1].data.splice(0,5);
       weatherChartRef.data.datasets[2].data.splice(0,5);
       weatherChartRef.data.datasets[3].data.splice(0,5);
-
+      weatherChartRef.data.datasets[4].data.splice(0,5);
+      weatherChartRef.data.datasets[5].data.splice(0,5);
 
       weatherChartRef.update();
 
@@ -74,6 +75,8 @@ $(document).ready(function() {
     $("#script").click(function(){
       startScript();
       socket.emit('script', {id:1});
+    //  console.log('data: ')
+
     });
 
 
@@ -378,6 +381,56 @@ function startScript(){
                 yAxisID: "y-axis-3",
 
             },
+            {
+                label: "PI heat 2nd",
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "#660000",
+                borderColor: "#660000",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "#660000",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "#660000",
+                pointHoverBorderColor: "#660000",
+                pointHoverBorderWidth: 5,
+                pointRadius: 1,
+                pointHitRadius: 1,
+                data: [],         //here comes the data
+                spanGaps: true,
+                steppedLine: true,
+                yAxisID: "y-axis-2",
+
+            },
+            {
+                label: "PI cool 2nd",
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "#000066",
+                borderColor: "#000066",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "#000066",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "#000066",
+                pointHoverBorderColor: "#000066",
+                pointHoverBorderWidth: 5,
+                pointRadius: 1,
+                pointHitRadius: 1,
+                data: [],         //here comes the data
+                spanGaps: true,
+                steppedLine: true,
+                yAxisID: "y-axis-3",
+
+            },
 
         ]
     };
@@ -395,8 +448,11 @@ function startScript(){
     chartConfig.labels = respData.dataPoints.map(dataPoint => dataPoint.time);
     chartConfig.datasets[0].data = respData.dataPoints.map(dataPoint => dataPoint.sp);
     chartConfig.datasets[1].data = respData.dataPoints.map(dataPoint => dataPoint.temp);
-    chartConfig.datasets[2].data = respData.dataPoints.map(dataPoint => dataPoint.pi);
+    chartConfig.datasets[2].data = respData.dataPoints.map(dataPoint => dataPoint.pi_heat);
     chartConfig.datasets[3].data = respData.dataPoints.map(dataPoint => dataPoint.pi_cool);
+    chartConfig.datasets[4].data = respData.dataPoints.map(dataPoint => dataPoint.pi_heat_2);
+    chartConfig.datasets[5].data = respData.dataPoints.map(dataPoint => dataPoint.pi_cool_2);
+
 
    renderWeatherChart(chartConfig)
     //now graph is visible after reloading!!
@@ -424,12 +480,14 @@ function startScript(){
     weatherChartRef.data.labels.push(newTempData.time);
     weatherChartRef.data.datasets[0].data.push(newTempData.sp);
     weatherChartRef.data.datasets[1].data.push(newTempData.temp);
-    weatherChartRef.data.datasets[2].data.push(newTempData.pi);
+    weatherChartRef.data.datasets[2].data.push(newTempData.pi_heat);
     weatherChartRef.data.datasets[3].data.push(newTempData.pi_cool);
+    weatherChartRef.data.datasets[4].data.push(newTempData.pi_heat_2);
+    weatherChartRef.data.datasets[5].data.push(newTempData.pi_cool_2);
 
 
     weatherChartRef.update();
-    console.log(weatherChartRef)
+    //console.log(weatherChartRef)
   });
 
 

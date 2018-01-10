@@ -30,13 +30,20 @@ app.get('/addPI', function(req,res){
 
   var pih = parseInt(req.query.pih);
   var pic = parseInt(req.query.pic);
+  var pih2 = parseInt(req.query.pih2);
+  var pic2 = parseInt(req.query.pic2);
+
+
+
   console.log('pi heat: ' + pih)
   console.log('pi cool: ' + pic)
+  console.log('pi heat 2nd: ' + pih2)
+  console.log('pi cool 2nd: ' + pic2)
   //var temp = parseInt(req.query.temperature);
   //var time = parseInt(req.query.time);
 //  if(temp && time && !isNaN(temp) && !isNaN(time)){
   if(!isNaN(pih)){
-    dataPunt.pi = pih;
+//    dataPunt.pi = pih;
     //dataPunt.time = moment().format(' h:mm:ss ');
 
     //updateGraph(dataPunt)
@@ -53,8 +60,14 @@ app.get('/addPI', function(req,res){
     res.send({success:true});
 
   }else if(!isNaN(pic)){
-    dataPunt.pi_cool = pic;
+//    dataPunt.pi_cool = pic;
     ets.output_pi_cool.emit('change', '5', pic)
+  }else if(!isNaN(pih2)){
+  //dataPunt.pi_heat_2 = pih2;
+  ets.output_pi_heat_2.emit('change', '5', pih2)
+}else if(!isNaN(pic2)){
+  //dataPunt.pi_cool_2 = pic2;
+  ets.output_pi_cool_2.emit('change', '5', pic2)
   }else{
     res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - pi.'});
   }

@@ -15,9 +15,14 @@ function storePoint(data){
   var help = new Object()
   help.time = data.time
   help.temp = data.temp
-  help.pi = data.pi
+
+  help.pi_heat = data.pi_heat
   help.pi_cool = data.pi_cool
+  help.pi_heat_2 = data.pi_heat
+  help.pi_cool_2 = data.pi_cool
+
   help.sp = data.sp
+
   logData.dataPoints[logData.dataPoints.length] = help
 }
 
@@ -216,7 +221,16 @@ ets.act_setpoint.on('change', function (oldvalue, newvalue) {
 ets.output_pi_heat.on('change', function (oldvalue, newvalue) {
     console.log("KNX PI: value: %j %", newvalue);
 
-    dataPunt.pi = newvalue.toFixed(2);
+    dataPunt.pi_heat = newvalue.toFixed(2);
+    dataPunt.time = moment().format(' h:mm:ss ');
+    updateGraph(dataPunt)
+  });
+
+//PI HEAT//
+ets.output_pi_heat_2.on('change', function (oldvalue, newvalue) {
+    console.log("KNX PI 2nd stage: value: %j %", newvalue);
+
+    dataPunt.pi_heat_2 = newvalue.toFixed(2);
     dataPunt.time = moment().format(' h:mm:ss ');
     updateGraph(dataPunt)
   });
@@ -226,7 +240,7 @@ ets.output_pwm_heat.on('change', function (oldvalue, newvalue) {
     newvalue = newvalue ? 1 : 0;
     console.log("KNX PI: value: %j %", newvalue);
 
-    dataPunt.pi = newvalue * 100;
+    dataPunt.pi_heat = newvalue * 100;
     dataPunt.time = moment().format(' h:mm:ss ');
     updateGraph(dataPunt)
   });
@@ -239,6 +253,16 @@ ets.output_pi_cool.on('change', function (oldvalue, newvalue) {
     dataPunt.time = moment().format(' h:mm:ss ');
     updateGraph(dataPunt)
   });
+
+//PI COOL 2nd stage//
+ets.output_pi_cool_2.on('change', function (oldvalue, newvalue) {
+    console.log("KNX PI 2nd: value: %j %", newvalue);
+
+    dataPunt.pi_cool_2 = newvalue;
+    dataPunt.time = moment().format(' h:mm:ss ');
+    updateGraph(dataPunt)
+  });
+
 
 //PWM COOL//
 ets.output_pwm_cool.on('change', function (oldvalue, newvalue) {

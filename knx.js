@@ -3,8 +3,14 @@ var knx = require('knx');
 var output_pi_heat = new knx.Datapoint({ga: '0/0/1', dpt: 'DPT5.001'});
 var output_pwm_heat = new knx.Datapoint({ga: '0/0/2', dpt: 'DPT1.001'});
 
+var output_pi_heat_2 = new knx.Datapoint({ga: '0/0/20', dpt: 'DPT5.001'});
+var output_pwm_heat_2 = new knx.Datapoint({ga: '0/0/21', dpt: 'DPT1.001'});
+
 var output_pi_cool = new knx.Datapoint({ga: '0/0/3', dpt: 'DPT5.001'});
 var output_pwm_cool = new knx.Datapoint({ga: '0/0/4', dpt: 'DPT1.001'});
+
+var output_pi_cool_2 = new knx.Datapoint({ga: '0/0/22', dpt: 'DPT5.001'});
+var output_pwm_cool_2 = new knx.Datapoint({ga: '0/0/23', dpt: 'DPT1.001'});
 
 
 var ext_temp = new knx.Datapoint({ga: '0/0/5', dpt: 'DPT9.001'});
@@ -22,8 +28,19 @@ var mode = new knx.Datapoint({ga: '0/0/8', dpt: 'DPT20.102'});
 var hc_mode = new knx.Datapoint({ga: '0/3/9', dpt: 'DPT5.001'});
 var hc_mode_fb = new knx.Datapoint({ga: '0/3/10', dpt: 'DPT5.001'});
 
-var ets = {output_pi_heat, output_pwm_heat, output_pi_cool,
-  act_setpoint, ext_temp, comf, mode_fb, mode, hc_mode, hc_mode_fb, output_pwm_cool}
+var ets = {
+  output_pi_heat,
+  output_pwm_heat,
+  output_pi_heat_2,
+  output_pwm_heat_2,
+
+  output_pi_cool,
+  output_pwm_cool,
+  output_pi_cool_2,
+  output_pwm_cool_2,
+
+  act_setpoint,
+  ext_temp, comf, mode_fb, mode, hc_mode, hc_mode_fb}
 
 
 var connection = knx.Connection({

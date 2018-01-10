@@ -11,7 +11,7 @@
 
 <div class="container-fluid">
 
-
+<h3>KNX logger</h3>
   <div class="row">
     <div class="col-lg-3" >
         <h4>temperature</h4>
@@ -98,7 +98,7 @@
           </div>
        </form>
 
-        <h4>mode select</h4>
+        <h4>mode</h4>
         <div class="btn-group" data-toggle="buttons" id='mode'>
 
         <label class="btn btn-secondary active btn-sm">
@@ -115,6 +115,17 @@
         </label>
         </div>
 
+  
+        <div class="btn-group" data-toggle="buttons" id='mode'>
+
+        <label class="btn btn-secondary active btn-sm">
+        <input type="radio" name="options" id="mode-0" autocomplete="off" value='0' checked> cooling
+        </label>
+        <label class="btn btn-secondary btn-sm">
+            <input type="radio" name="options" id="mode-1" autocomplete="off" value='1'>  heating
+        </label>
+        </div>
+    
 
         <div class="btn-group" data-toggle="buttons" id='hvac'>
 
@@ -154,8 +165,20 @@
 
 
       </div>
+      
 
   </div>
+      <div class="row">
+          <div class="col-lg-3" >
+              <h3>texts</h3>
+          </div>
+          <div class="col-lg-9">
+             <h3>text</h3>
+          </div>
+          
+   
+    </div>
+
 
 
 
