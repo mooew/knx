@@ -111,7 +111,11 @@ socket.on('server-hc-fb', function(data){
   $("#mode-" + data).prop('checked', true).trigger("click");
 })
 
-
+socket.on('updateDOM', function(data){
+  //var sp = parseInt(data)
+  //console.log(sp)
+  $("#sp-4").val(data)
+})
 
 });
 

@@ -26,12 +26,13 @@ app.get('/getTemperature', function(req,res){
 //update PI throug http GET request//
 //------------------------------------//
 
-app.get('/addPI', function(req,res){
+app.get('/add', function(req,res){
 
   var pih = parseInt(req.query.pih);
   var pic = parseInt(req.query.pic);
   var pih2 = parseInt(req.query.pih2);
   var pic2 = parseInt(req.query.pic2);
+  var sp = parseFloat(req.query.sp).toFixed(1);
 
 
 
@@ -68,7 +69,9 @@ app.get('/addPI', function(req,res){
 }else if(!isNaN(pic2)){
   //dataPunt.pi_cool_2 = pic2;
   ets.output_pi_cool_2.emit('change', '5', pic2)
-  }else{
+}else if(!isNaN(sp)){
+  ets.act_setpoint.emit('change', '5', sp)
+}else{
     res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - pi.'});
   }
 });

@@ -25,8 +25,11 @@ var act_setpoint = new knx.Datapoint({ga: '0/0/7', dpt: 'DPT9.001'});
 var mode_fb = new knx.Datapoint({ga: '0/0/9', dpt: 'DPT20.102'});
 var mode = new knx.Datapoint({ga: '0/0/8', dpt: 'DPT20.102'});
 
-var hc_mode = new knx.Datapoint({ga: '0/3/9', dpt: 'DPT5.001'});
+var hc_mode = new knx.Datapoint({ga: '0/0/9', dpt: 'DPT5.001'});
 var hc_mode_fb = new knx.Datapoint({ga: '0/3/10', dpt: 'DPT5.001'});
+
+var heat_act= new knx.Datapoint({ga: '0/0/16', dpt: 'DPT1.001'});
+var cool_act= new knx.Datapoint({ga: '0/0/17', dpt: 'DPT1.001'});
 
 var ets = {
   output_pi_heat,

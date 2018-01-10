@@ -205,7 +205,7 @@ ets.hc_mode_fb.on('change', function (oldvalue, newvalue) {
       });
 
 
-  //--------------------setpoint--------------------------//
+  //--------------------setpoints--------------------------//
 
 ets.act_setpoint.on('change', function (oldvalue, newvalue) {
     console.log("KNX SP: value: %j °C", newvalue);
@@ -213,6 +213,8 @@ ets.act_setpoint.on('change', function (oldvalue, newvalue) {
     dataPunt.sp = parseFloat(newvalue).toFixed(2);
     dataPunt.time = moment().format(' h:mm:ss ')
     updateGraph(dataPunt)
+
+    io.emit('updateDOM', dataPunt.sp)
     });
 
 
