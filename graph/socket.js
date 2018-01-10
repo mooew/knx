@@ -281,13 +281,13 @@ ets.output_pwm_cool.on('change', function (oldvalue, newvalue) {
 
 //HEAT and COOL active//
 ets.heat_act.on('change', function (oldvalue, newvalue) {
-  console.log('old: ' + dataPunt.cool_act)
+  console.log('old: ' + dataPunt.heat_act)
   console.log('new: ' + newvalue)
     newvalue = newvalue ? 1 : 0;
-    oldvalue = oldvalue ? 1 : 0;
+    oldvalue = dataPunt.heat_act ? 1 : 0;
 
     if(!newvalue){
-      if(newvalue !== dataPunt.heat_act){
+      if(newvalue !== oldvalue){
         dataPunt.heat_act = 1;
         dataPunt.time = moment().format(' h:mm:ss ');
         updateGraph(dataPunt)
@@ -313,10 +313,10 @@ console.log('old: ' + dataPunt.cool_act)
 console.log('new: ' + newvalue)
 
     newvalue = newvalue ? 1 : 0;
-    oldvalue = oldvalue ? 1 : 0;
+    oldvalue = dataPunt.cool_act ? 1 : 0;
 
     if(!newvalue){
-      if(newvalue !== dataPunt.cool_act){
+      if(newvalue !== oldvalue){
         dataPunt.cool_act = 1;
         dataPunt.time = moment().format(' h:mm:ss ');
         updateGraph(dataPunt)

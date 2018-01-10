@@ -259,8 +259,8 @@ function startScript(){
                   labelString: 'value'
                 },
                 ticks: {
-                  suggestedMin: -200,
-                  suggestedMax: 598,
+                  suggestedMin: -50,
+                  suggestedMax: 250,
                   display: false,
               }
 
