@@ -5,20 +5,45 @@ var dataPunt = require('./data').dataPoint;
 var EventEmitter = require('events').EventEmitter;
 
 var func = new EventEmitter();
-var delayMs = 1000 * 10;   //1 sec
+var delayMs = 1000 * 3;   //1 sec
+
 
 
 var delta = {
   controller: null,
   roomLoss: null
 };
-
+var count = 0,
+  inertia = 200;
 
 //var knx_json_obj ={'destination': dest, 'value': val, 'time':date };
 
 var timer = new Timer(function() {
-console.log('timer executed: ' + dataPunt.pi);
-delta.controller = (dataPunt.pi/200);
+count = count + 1
+console.log(count)
+console.log(dataPunt.pi_cool)
+//console.log('timer executed: ' + dataPunt.pi);
+/////////////////////////HEATING//////////////////////////////
+if(dataPunt.pi_heat > 0){
+
+delta.controller = (dataPunt.pi_heat/(200));
+
+console.log('temp goes up: ' + delta.controller);
+
+}
+else if(dataPunt.pi_cool > 0 ){
+
+delta.controller = (dataPunt.pi_cool/(-200));
+
+console.log('temp goes down: ' + delta.controller);
+
+}else{
+  delta.controller = 0;
+}
+
+///////////////////////COOLING/////////////////////////////////
+
+
 
 func.emit('deltatemp', delta);
 

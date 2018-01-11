@@ -1,21 +1,63 @@
-//hallo
 var knx = require('knx');
 
-var dp1 = new knx.Datapoint({ga: '0/3/8', dpt: 'DPT5.001'});
-var pwm = new knx.Datapoint({ga: '0/3/8', dpt: 'DPT5.001'});
-var dp2 = new knx.Datapoint({ga: '0/3/2', dpt: 'DPT9.001'});
-var ext_temp = new knx.Datapoint({ga: '0/3/0', dpt: 'DPT9.001'});
-var comf = new knx.Datapoint({ga: '0/3/3', dpt: 'DPT9.001'});
-var mode_fb = new knx.Datapoint({ga: '0/3/4', dpt: 'DPT20.102'});
-var mode = new knx.Datapoint({ga: '0/3/5', dpt: 'DPT20.102'});
+var output_pi_heat = new knx.Datapoint({ga: '0/0/1', dpt: 'DPT5.001'});
+var output_pwm_heat = new knx.Datapoint({ga: '0/0/2', dpt: 'DPT1.001'});
 
-var ets = {dp1, dp2, ext_temp, comf, mode_fb, mode}
+var output_pi_heat_2 = new knx.Datapoint({ga: '0/0/20', dpt: 'DPT5.001'});
+var output_pwm_heat_2 = new knx.Datapoint({ga: '0/0/21', dpt: 'DPT1.001'});
+
+var output_pi_cool = new knx.Datapoint({ga: '0/0/3', dpt: 'DPT5.001'});
+var output_pwm_cool = new knx.Datapoint({ga: '0/0/4', dpt: 'DPT1.001'});
+
+var output_pi_cool_2 = new knx.Datapoint({ga: '0/0/22', dpt: 'DPT5.001'});
+var output_pwm_cool_2 = new knx.Datapoint({ga: '0/0/23', dpt: 'DPT1.001'});
+
+
+var ext_temp = new knx.Datapoint({ga: '0/0/5', dpt: 'DPT9.001'});
+
+
+var comf = new knx.Datapoint({ga: '0/0/6', dpt: 'DPT9.001'});
+
+
+
+var act_setpoint = new knx.Datapoint({ga: '0/0/7', dpt: 'DPT9.001'});
+
+var mode_fb = new knx.Datapoint({ga: '0/0/9', dpt: 'DPT20.102'});
+var mode = new knx.Datapoint({ga: '0/0/8', dpt: 'DPT20.102'});
+
+var hc_mode = new knx.Datapoint({ga: '0/0/9', dpt: 'DPT5.001'});
+var hc_mode_fb = new knx.Datapoint({ga: '0/3/10', dpt: 'DPT5.001'});
+
+var heat_act= new knx.Datapoint({ga: '0/0/16', dpt: 'DPT1.001'});
+var cool_act= new knx.Datapoint({ga: '0/0/17', dpt: 'DPT1.001'});
+
+var ets = {
+  output_pi_heat,
+  output_pwm_heat,
+  output_pi_heat_2,
+  output_pwm_heat_2,
+
+  output_pi_cool,
+  output_pwm_cool,
+  output_pi_cool_2,
+  output_pwm_cool_2,
+
+  act_setpoint,
+  ext_temp, comf,
+
+  mode_fb,
+  mode,
+  hc_mode,
+  hc_mode_fb,
+
+  heat_act,
+  cool_act}
 
 
 var connection = knx.Connection({
   ipAddr: '10.0.211.39', ipPort: 3671,
   physAddr: '1.1.8',
-
+  //debug: true,
   handlers: {
     connected: function() {
       console.log('Connected to KNX!');
@@ -44,4 +86,4 @@ var connection = knx.Connection({
 
 
   module.exports.ets = ets
-  //module.exports.connection = connection
+  module.exports.connection = connection

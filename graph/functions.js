@@ -84,4 +84,4 @@ Timer(function() {
 }).start();
 */
 
-module.exports.timer = timer;
+//module.exports.timer = timer;

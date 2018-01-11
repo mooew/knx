@@ -1,38 +1,93 @@
-// Using IIFE for Implementing Module Pattern to keep the Local Space for the JS Variables
-//(function() {
   var socket = io.connect('http://localhost:9000');
 
   // Query DOM
 
 $(document).ready(function() {
-    $("#sp-send").click(function(){
-       var sp3 = $('#sp-3').val();
-        console.log(sp3);
-        socket.emit('input_comf', {inp: sp3});
-    });
-});
 
-$(document).ready(function() {
-    $("#temp-send").click(function(){
+
+///////////setpoints//////////////////////////////
+    $("#sp-6-s").click(function(){
+       var sp6 = $('#sp-6').val();
+        console.log('sp6 economy heat: ' + sp6);
+        socket.emit('input_sp', {inp: sp6, id:6});
+    });
+
+    $("#sp-5-s").click(function(){
+       var sp5 = $('#sp-5').val();
+        console.log('sp5 standby heat: ' + sp5);
+        socket.emit('input_sp', {inp: sp5, id:5});
+    });
+
+    $("#sp-4-s").click(function(){
+       var sp4 = $('#sp-4').val();
+        console.log('sp4 comfort heat: ' + sp4);
+        socket.emit('input_sp', {inp: sp4, id:4});
+    });
+
+    $("#sp-3-s").click(function(){
+       var sp3 = $('#sp-3').val();
+        console.log('sp3 comfort cool: ' + sp3);
+        socket.emit('input_sp', {inp: sp3, id:3});
+    });
+
+    $("#sp-2-s").click(function(){
+       var sp2 = $('#sp-2').val();
+       //var idd = 2;
+        console.log('sp2 standby cool: ' + sp2);
+        socket.emit('input_sp', {inp: sp2, id:2});
+    });
+
+    $("#sp-1-s").click(function(){
+       var sp1 = $('#sp-1').val();
+       //var idd = 1;
+        console.log('sp1 standby cool: ' + sp1);
+        socket.emit('input_sp', {inp: sp1, id:1});
+    });
+
+
+
+
+
+    $("#temp-ext-s").click(function(){
        var tempExt = $('#temp-ext').val();
         console.log(tempExt);
         socket.emit('input_temp', {inp: tempExt});
     });
-});
 
-$(document).ready(function() {
     $("#reset").click(function(){
       weatherChartRef.resetZoom();
     });
 
-    //mode: off heat cool auto
+    $("#delete").click(function(){
+      //socket.emit('script', {id:2});
+      weatherChartRef.data.labels.splice(0,5);
+      weatherChartRef.data.datasets[0].data.splice(0,5);
+      weatherChartRef.data.datasets[1].data.splice(0,5);
+      weatherChartRef.data.datasets[2].data.splice(0,5);
+      weatherChartRef.data.datasets[3].data.splice(0,5);
+      weatherChartRef.data.datasets[4].data.splice(0,5);
+      weatherChartRef.data.datasets[5].data.splice(0,5);
+
+      weatherChartRef.update();
+
+    });
+
+    $("#script").click(function(){
+      startScript();
+      socket.emit('script', {id:1});
+    //  console.log('data: ')
+
+    });
+
+
+///////mode: off heat cool auto///////////////////
     $('#mode input').on('change', function() {
    //alert($('input[name=options]:checked', '#mode').val());
    socket.emit('mode',
     $('input[name=options]:checked', '#mode').val())
     });
 
-    //mode: comfort stdby eco protect
+////////mode: comfort stdby eco protect////////////
     $('#hvac input').on('change', function() {
    //alert($('input[name=options]:checked', '#hvac').val());
    socket.emit('hvac',
@@ -40,35 +95,36 @@ $(document).ready(function() {
     });
 
 
-//update dom from the server
+/////////////////update DOM from the server//////////////
+
+//hvac mode is updated by knx
   socket.on('server-hvac-fb', function(data){
     //select = stringify(data)
     //1 = comf, 2 = stdby, 3 = eco, 4 = protect
     $("#hvac-" + data).prop('checked', true).trigger("click");
   })
 
+// heat/cool/auto mode is updated by knx
+socket.on('server-hc-fb', function(data){
+  //select = stringify(data)
+  //1 = comf, 2 = stdby, 3 = eco, 4 = protect
+  $("#mode-" + data).prop('checked', true).trigger("click");
+})
 
+socket.on('updateDOM', function(data){
+  //var sp = parseInt(data)
+  //console.log(sp)
+  $("#sp-4").val(data)
+})
 
 });
 
 
 
 
-
-
-    // Enable pusher logging - don't include this in production
-    Pusher.logToConsole = true;
-
-
-
     var serverUrl = "/",
         members = [],
-        pusher = new Pusher('95be360cf53aab13f769', {
-          cluster: 'eu',
-        encrypted: true
-       }),
-
-        channel,weatherChartRef,
+        weatherChartRef,
         timeFormat = 'h:mm:ss';
 
 
@@ -91,8 +147,10 @@ $(document).ready(function() {
       };
       xhr.send(JSON.stringify(payload));
     }
-
-
+////////////////////// SCRIPT ///////////////////////////////////:::
+function startScript(){
+  console.log('start')
+}
 
 ////////////////////// GRAFIEK ///////////////////////////////////:::
 
@@ -112,6 +170,14 @@ $(document).ready(function() {
                       title:{
                           text: "Chart.js Time Scale"
                       },
+                      tooltips: {
+						mode: 'index',
+						intersect: true,
+					},
+          hover: {
+						mode: 'index',
+						intersect: true
+					},
               scales: {
                 xAxes: [{
                   type: "time",
@@ -122,7 +188,7 @@ $(document).ready(function() {
                     tooltipFormat: 'h:mm:ss'
                   },
                   scaleLabel: {
-                    display: true,
+                    display: false,
                     labelString: 'Date'
                   }
                 }, ],
@@ -131,11 +197,11 @@ $(document).ready(function() {
                   position: "left",
                   id: "y-axis-1",
                   scaleLabel: {
-                    display: true,
+                    display: false,
                     labelString: 'value'
                   },
                   ticks: {
-                    suggestedMin: 10,
+                    suggestedMin: 0,
                     suggestedMax: 30
                 }
               },{
@@ -145,17 +211,61 @@ $(document).ready(function() {
                 // grid line settings
                 gridLines: {
                     drawOnChartArea: false, // only want the grid lines for one axis to show up
+                    drawBorder: false,
+                    display: false,
                 },
                 scaleLabel: {
-                  display: true,
+                  display: false,
                   labelString: 'value'
                 },
                 ticks: {
                   suggestedMin: 0,
-                  suggestedMax: 100
+                  suggestedMax: 800,
+                  display: false,
               }
 
-              }]
+              },{
+                //y-as 3
+                position: "right",
+                id: "y-axis-3",
+                // grid line settings
+                gridLines: {
+                    drawOnChartArea: false, // only want the grid lines for one axis to show up
+                    drawBorder: false,
+                    display: false,
+                },
+                scaleLabel: {
+                  display: false,
+                  labelString: 'value'
+                },
+                ticks: {
+                  suggestedMin: -102,
+                  suggestedMax: 698,
+                  display: false,
+              }
+
+              },{
+                //y-as 4
+                position: "right",
+                id: "y-axis-4",
+                // grid line settings
+                gridLines: {
+                    drawOnChartArea: false, // only want the grid lines for one axis to show up
+                    drawBorder: false,
+                    display: false,
+                },
+                scaleLabel: {
+                  display: false,
+                  labelString: 'value'
+                },
+                ticks: {
+                  suggestedMin: -50,
+                  suggestedMax: 250,
+                  display: false,
+              }
+
+              }
+            ]
               },
         // Container for pan options
         pan: {
@@ -198,19 +308,19 @@ $(document).ready(function() {
                 label: "setpoint",
                 fill: false,
                 lineTension: 0,
-                backgroundColor: "rgba(29,128,165,0.4)",
-                borderColor: "rgba(29,128,165,1)",
+                backgroundColor: "rgba(29,165,24,0.4)",
+                borderColor: "rgba(29,165,24,0.4)",
                 borderCapStyle: 'butt',
                 borderDash: [],
                 borderDashOffset: 0.0,
                 borderJoinStyle: 'miter',
-                pointBorderColor: "rgba(75,192,192,1)",
+                pointBorderColor: "rgba(29,165,24,0.4)",
                 pointBackgroundColor: "#fff",
                 pointBorderWidth: 1,
                 pointHoverRadius: 5,
-                pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                pointHoverBorderColor: "rgba(220,220,220,1)",
-                pointHoverBorderWidth: 2,
+                pointHoverBackgroundColor: "rgba(29,165,24,0.4)",
+                pointHoverBorderColor: "rgba(29,165,24,0.4)",
+                pointHoverBorderWidth: 5,
                 pointRadius: 1,
                 pointHitRadius: 1,
                 data: [],           //y-axes
@@ -230,13 +340,13 @@ $(document).ready(function() {
                 borderDash: [],
                 borderDashOffset: 0.0,
                 borderJoinStyle: 'miter',
-                pointBorderColor: "rgba(200,192,200,1)",
+                pointBorderColor: "rgba(156,107,119,0.4)",
                 pointBackgroundColor: "#fff",
                 pointBorderWidth: 1,
-                pointHoverRadius: 1,
-                pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                pointHoverBorderColor: "rgba(220,220,220,1)",
-                pointHoverBorderWidth: 2,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "rgba(156,107,119,0.4)",
+                pointHoverBorderColor: "rgba(156,107,119,0.4)",
+                pointHoverBorderWidth: 5,
                 pointRadius: 1,
                 pointHitRadius: 1,
                 data: [],           //y-axes
@@ -247,7 +357,7 @@ $(document).ready(function() {
 
             },
             {
-                label: "PI",
+                label: "PI heat",
                 fill: false,
                 lineTension: 0,
                 backgroundColor: "#660000",
@@ -262,13 +372,138 @@ $(document).ready(function() {
                 pointHoverRadius: 5,
                 pointHoverBackgroundColor: "#660000",
                 pointHoverBorderColor: "#660000",
-                pointHoverBorderWidth: 2,
+                pointHoverBorderWidth: 5,
                 pointRadius: 1,
                 pointHitRadius: 1,
                 data: [],         //here comes the data
                 spanGaps: true,
                 steppedLine: true,
                 yAxisID: "y-axis-2",
+
+            },
+            {
+                label: "PI cool",
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "#000066",
+                borderColor: "#000066",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "#000066",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "#000066",
+                pointHoverBorderColor: "#000066",
+                pointHoverBorderWidth: 5,
+                pointRadius: 1,
+                pointHitRadius: 1,
+                data: [],         //here comes the data
+                spanGaps: true,
+                steppedLine: true,
+                yAxisID: "y-axis-3",
+
+            },
+            {
+                label: "PI heat 2nd",
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "#660000",
+                borderColor: "#660000",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "#660000",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "#660000",
+                pointHoverBorderColor: "#660000",
+                pointHoverBorderWidth: 5,
+                pointRadius: 1,
+                pointHitRadius: 1,
+                data: [],         //here comes the data
+                spanGaps: true,
+                steppedLine: true,
+                yAxisID: "y-axis-2",
+
+            },
+            {
+                label: "PI cool 2nd",
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "#000066",
+                borderColor: "#000066",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "#000066",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "#000066",
+                pointHoverBorderColor: "#000066",
+                pointHoverBorderWidth: 5,
+                pointRadius: 1,
+                pointHitRadius: 1,
+                data: [],         //here comes the data
+                spanGaps: true,
+                steppedLine: true,
+                yAxisID: "y-axis-3",
+
+            },
+            {
+                label: "heating",
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "#660000",
+                borderColor: "#660000",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "#660000",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "#660000",
+                pointHoverBorderColor: "#660000",
+                pointHoverBorderWidth: 5,
+                pointRadius: 1,
+                pointHitRadius: 1,
+                data: [],         //here comes the data
+                spanGaps: false,
+                steppedLine: true,
+                yAxisID: "y-axis-4",
+
+            },
+            {
+                label: "cooling",
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "#000066",
+                borderColor: "#000066",
+                borderCapStyle: 'butt',
+                borderDash: [],
+                borderDashOffset: 0.0,
+                borderJoinStyle: 'miter',
+                pointBorderColor: "#000066",
+                pointBackgroundColor: "#fff",
+                pointBorderWidth: 1,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "#000066",
+                pointHoverBorderColor: "#000066",
+                pointHoverBorderWidth: 5,
+                pointRadius: 1,
+                pointHitRadius: 1,
+                data: [],         //here comes the data
+                spanGaps: false,
+                steppedLine: true,
+                yAxisID: "y-axis-4",
 
             },
 
@@ -288,73 +523,51 @@ $(document).ready(function() {
     chartConfig.labels = respData.dataPoints.map(dataPoint => dataPoint.time);
     chartConfig.datasets[0].data = respData.dataPoints.map(dataPoint => dataPoint.sp);
     chartConfig.datasets[1].data = respData.dataPoints.map(dataPoint => dataPoint.temp);
-    chartConfig.datasets[2].data = respData.dataPoints.map(dataPoint => dataPoint.pi);
-    console.log('chartConfig labels: ' + chartConfig.labels)
-    console.log('chartConfig 0: ' + chartConfig.datasets[0].data)
-    console.log('chartConfig 1: ' + chartConfig.datasets[1].data)
-//comment because after refresh data is mixed
-//now after refresh everything is gone
+    chartConfig.datasets[2].data = respData.dataPoints.map(dataPoint => dataPoint.pi_heat);
+    chartConfig.datasets[3].data = respData.dataPoints.map(dataPoint => dataPoint.pi_cool);
+    chartConfig.datasets[4].data = respData.dataPoints.map(dataPoint => dataPoint.pi_heat_2);
+    chartConfig.datasets[5].data = respData.dataPoints.map(dataPoint => dataPoint.pi_cool_2);
+    chartConfig.datasets[6].data = respData.dataPoints.map(dataPoint => dataPoint.heat_act);
+    chartConfig.datasets[7].data = respData.dataPoints.map(dataPoint => dataPoint.cool_act);
+
 
    renderWeatherChart(chartConfig)
     //now graph is visible after reloading!!
   }
 
-  channel = pusher.subscribe('london-temp-chart');
-  //action on new event!?
+
+  socket.on('new-graph-data', function(data) {
+    console.log(data);
+    //var newTempData = data.dataPoint;
+
+  var newTempData = data; //test socket
 
 /*
-  channel.bind('new-temperature', function(data) {
-    var newTempData = data.dataPoint;
-    //console.log(data);
-    //alert('An event was triggered with message: ' + data.dataPoint);
-    /*
-    if(weatherChartRef.data.labels.length > 30){
+    if(weatherChartRef.data.labels.length > 3){
       weatherChartRef.data.labels.shift();
       weatherChartRef.data.datasets[0].data.shift();
       weatherChartRef.data.datasets[1].data.shift();
+      weatherChartRef.data.datasets[2].data.shift();
+      weatherChartRef.data.datasets[3].data.shift();
     }
-
-    console.log('update');
-    while(weatherChartRef.data.datasets[0].data.length < weatherChartRef.data.labels.length){
-    weatherChartRef.data.datasets[0].data.push(null);
-    };
-    weatherChartRef.data.labels.push(newTempData.time);
-    weatherChartRef.data.datasets[0].data.push(newTempData.temperature);
-    weatherChartRef.update();
-    console.log(weatherChartRef.data.datasets[0].data);
-  });
-
-  channel.bind('new-temperature1', function(data) {
-    var newTempData = data.dataPoint;
-    // if lot sof data scroll the chart
-    //console.log(data);
-    //alert('An event was triggered with message: ' + data.dataPoint);
-    /*
-    if(weatherChartRef.data.labels.length > 15){
-      weatherChartRef.data.labels.shift();
-      weatherChartRef.data.datasets[1].data.shift();
-    }
-
-    console.log('update');
-    while(weatherChartRef.data.datasets[1].data.length < weatherChartRef.data.labels.length){
-    weatherChartRef.data.datasets[1].data.push(null);
-    };
-    weatherChartRef.data.labels.push(newTempData.time);
-    weatherChartRef.data.datasets[1].data.push(newTempData.temperature);
-    weatherChartRef.update();
-  });
 */
-  channel.bind('new-data', function(data) {
-    console.log(data);
-    var newTempData = data.dataPoint;
+
+
     console.log('new data is received');
     weatherChartRef.data.labels.push(newTempData.time);
     weatherChartRef.data.datasets[0].data.push(newTempData.sp);
     weatherChartRef.data.datasets[1].data.push(newTempData.temp);
-    weatherChartRef.data.datasets[2].data.push(newTempData.pi);
+    weatherChartRef.data.datasets[2].data.push(newTempData.pi_heat);
+    weatherChartRef.data.datasets[3].data.push(newTempData.pi_cool);
+    weatherChartRef.data.datasets[4].data.push(newTempData.pi_heat_2);
+    weatherChartRef.data.datasets[5].data.push(newTempData.pi_cool_2);
+    weatherChartRef.data.datasets[6].data.push(newTempData.heat_act);
+    weatherChartRef.data.datasets[7].data.push(newTempData.cool_act);
+
     weatherChartRef.update();
-    console.log(weatherChartRef)
+    //console.log(weatherChartRef)
   });
+
 
 
 /* TEMP CODE FOR TESTING */

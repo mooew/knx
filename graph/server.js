@@ -1,26 +1,11 @@
 //test
 var express = require('express');
-var socket = require('socket.io');
+
 var path = require('path');
 var bodyParser = require('body-parser');
 var dataPunt = require('./data').dataPoint;
-var moment = require('moment');
-var Pusher = require('pusher');
-var timer = require('./functions').timer;
-var functionTemp = require('./functionTemp');
-var knx = require('./functions').log_event;
+var logData = require('./data').logData;
 var ets = require('../knx.js').ets
-//var connection = require('../knx.js').connection
-
-
-
-var pusher = new Pusher({
-    appId: '426105',
-    key: '95be360cf53aab13f769',
-    secret: '164a62f9ce0d2f7ad82a',
-    cluster: 'eu',
-   encrypted: true
-});
 
 
 //App setup
@@ -30,135 +15,84 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-var londonTempData = {
-    city: 'London',
-    unit: 'celsius',
-    dataPoints: [
-
-
-
-
-    ]
-  }
-app.get('/ets', function(req, res){
-  res.render('ets');
-})
 
 //API//
 app.get('/getTemperature', function(req,res){
-  res.send(londonTempData);
-  console.log('/getTemperature: ' + londonTempData.dataPoints[londonTempData.dataPoints.length - 1].time)
-
+  res.send(logData);
+  console.log('/getTemperature: ')
 });
 
 //------------------------------------//
-//update graph throug http GET request//
+//update PI throug http GET request//
 //------------------------------------//
-/*
-app.get('/addTemperature', function(req,res){
 
-  var temp = parseInt(req.query.temperature);
-  var time = parseInt(req.query.time);
-  if(temp && time && !isNaN(temp) && !isNaN(time)){
+app.get('/add', function(req,res){
+
+  var pih = parseInt(req.query.pih);
+  var pic = parseInt(req.query.pic);
+  var pih2 = parseInt(req.query.pih2);
+  var pic2 = parseInt(req.query.pic2);
+  var sp = parseFloat(req.query.sp).toFixed(1);
+  var h = parseInt(req.query.h);
+  var c = parseInt(req.query.c);
 
 
-    var newDataPoint = {
-      temp: temp,
-//      time: time
-      time: moment().format(' h:mm:ss ')
-    };
-    //londonTempData.dataPoints.push(newDataPoint);         //ad new datapoint to array
+
+  console.log('pi heat: ' + pih)
+  console.log('pi cool: ' + pic)
+  console.log('pi heat 2nd: ' + pih2)
+  console.log('pi cool 2nd: ' + pic2)
+  console.log('heat: ' + h)
+    console.log('cool: ' + c)
+
+  //var temp = parseInt(req.query.temperature);
+  //var time = parseInt(req.query.time);
+//  if(temp && time && !isNaN(temp) && !isNaN(time)){
+  if(!isNaN(pih)){
+//    dataPunt.pi = pih;
+    //dataPunt.time = moment().format(' h:mm:ss ');
+
+    //updateGraph(dataPunt)
+    ets.output_pi_heat.emit('change', '5', pih)
+
+
+
+    //logData.dataPoints.push(newDataPoint);         //ad new datapoint to array
     //trigger event event and send newDataPoint
-    pusher.trigger('london-temp-chart', 'new-temperature', {
-      dataPoint: newDataPoint
-    });
-
+    //pusher.trigger('london-temp-chart', 'new-temperature', {
+      //dataPoint: newDataPoint
+    //});
 
     res.send({success:true});
 
-
-  }else{
-    res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - temperature & time.'});
+  }else if(!isNaN(pic)){
+//    dataPunt.pi_cool = pic;
+    ets.output_pi_cool.emit('change', '5', pic)
+    res.send({success:true});
+  }else if(!isNaN(pih2)){
+  //dataPunt.pi_heat_2 = pih2;
+  ets.output_pi_heat_2.emit('change', '5', pih2)
+  res.send({success:true});
+}else if(!isNaN(pic2)){
+  //dataPunt.pi_cool_2 = pic2;
+  ets.output_pi_cool_2.emit('change', '5', pic2)
+  res.send({success:true});
+}else if(!isNaN(sp)){
+  ets.act_setpoint.emit('change', '5', sp)
+  res.send({success:true});
+}else if(!isNaN(h)){
+  ets.heat_act.emit('change', '5', h)
+  res.send({success:true});
+}else if(!isNaN(c)){
+  ets.cool_act.emit('change', '5', c)
+  res.send({success:true});
+}else{
+    res.send({success:false, errorMessage: 'Invalid Query Paramaters, required - pi.'});
   }
 });
 
-*/
 
 
-//-------------------------------//
-//update graph through server KNX//
-//-------------------------------//
-
-
-ets.dp2.on('change', function (oldvalue, newvalue) {
-  console.log("KNX SP: value: %j °C", newvalue);
-
-  dataPunt.sp = parseFloat(newvalue).toFixed(2);
-  dataPunt.time = moment().format(' h:mm:ss ')
-
-  pusher.trigger('london-temp-chart', 'new-data', {
-    dataPoint: dataPunt
-  });
-  var help = new Object()
-  help.time = dataPunt.time
-  help.temp = dataPunt.temp
-  help.pi = dataPunt.pi
-  help.sp = dataPunt.sp
-  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
-  //console.log('londonTempData: ' + londonTempData.dataPoints[londonTempData.dataPoints.length-1].time)
-});
-
-
-
-ets.dp1.on('change', function (oldvalue, newvalue) {
-  console.log("KNX PI: value: %j %", newvalue);
-
-  dataPunt.pi = parseFloat(newvalue).toFixed(2);
-  dataPunt.time = moment().format(' h:mm:ss ');
-
-
-  pusher.trigger('london-temp-chart', 'new-data', {
-     dataPoint: dataPunt
-  });
-  var help = new Object()
-  help.time = dataPunt.time
-  help.temp = dataPunt.temp
-  help.pi = dataPunt.pi
-  help.sp = dataPunt.sp
-  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
-});
-
-//mode is updated by knx
-//0 = OFF, 1 = heat, 2 = cool, 3 = auto
-
-/*
-//hvac mode is updated by knx
-ets.mode_fb.on('change', function (oldvalue, newvalue) {
-//1 = comf, 2 = stdby, 3 = eco, 4 = protect
-socket.emit('server-hvac-fb', newvalue)
-});
-*/
-
-//hvac mode is update by server
-
-// functions
-//autoate the room temperature
-functionTemp.func.on('deltatemp', function(data){
-  console.log('deltatemp ontvangen: ' + data.controller)
-  dataPunt.temp = dataPunt.temp + data.controller;
-  dataPunt.time = moment().format(' h:mm:ss ');
-
-
-  pusher.trigger('london-temp-chart', 'new-data', {
-    dataPoint: dataPunt
-  });
-  var help = new Object()
-  help.time = dataPunt.time
-  help.temp = dataPunt.temp
-  help.pi = dataPunt.pi
-  help.sp = dataPunt.sp
-  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
-});
 
 
 
@@ -169,99 +103,11 @@ app.use(function(req, res, next) {
     next(error404);
 });
 
-module.exports = app;
+
 
 var server = app.listen(9000, function(){
   console.log('Example app listening on port 9000!')
 });
 
-
-////////////////////////////////////////////
-/////// Socket setup & pass server /////////
-////////////////////////////////////////////
-var io = socket(server);
-io.on('connection', (socket) => {
-
-console.log('made socket connection', socket.id);
-
-
-//----used for input fields----//
-
-// comfort temperature
-// the graph will be updated via response of KNX
-    socket.on('input_comf', function(data){
-        var inp = parseInt(data.inp);
-        console.log('temp: ' + inp);
-      ets.comf.write(inp);
-  });
-
-// ext temperature
-// send to KNX and update graph
-
-    socket.on('input_temp', function(data){
-      temp = parseInt(data.inp);
-      console.log('sp: ' +  temp);
-      ets.ext_temp.write(temp);
-
-      dataPunt.temp = temp;
-      dataPunt.time = moment().format(' h:mm:ss ');
-
-
-      pusher.trigger('london-temp-chart', 'new-data', {
-        dataPoint: dataPunt
-        });
-      var help = new Object()
-      help.time = dataPunt.time
-      help.temp = dataPunt.temp
-      help.pi = dataPunt.pi
-      help.sp = dataPunt.sp
-  londonTempData.dataPoints[londonTempData.dataPoints.length] = help
-      });
-
-//----used for button presses----//
-    socket.on('hvac', function(data){
-      //0 = OFF, 1 = heat, 2 = cool, 3 = auto
-      var mode = parseInt(data);
-        console.log('mode: ' + mode);
-        ets.mode.write(mode);
-        /*
-        if(mode === 0){
-          //timer.setDelay(timer.getDelay() + 1000);
-          //timer.start();
-        }
-        else if (mode === 1) {
-          //timer.stop();
-        }
-        else if(mode === 2){
-          /*
-          if (functionTemp.timer.isStopped()) {
-            console.log('start timer');
-            functionTemp.timer.start();
-          } else {
-            console.log('stop timer');
-            functionTemp.timer.stop();
-          }
-
-        }
-        else if (mode === 3) {
-
-        }
-*/
-
-    });
-
-    socket.on('hvac', function(data){
-      var mode = parseInt(data);
-      console.log('hvac mode: ' + mode);
-      //console.log(connection.connected)
-      // test --> socket.emit('server-mode-fb', mode)
-
-    });
-
-    //hvac mode is updated by knx
-    ets.mode_fb.on('change', function (oldvalue, newvalue) {
-    //1 = comf, 2 = stdby, 3 = eco, 4 = protect
-    socket.emit('server-hvac-fb', newvalue)
-    });
-
-});
+module.exports.app = app;
+module.exports.server = server;
