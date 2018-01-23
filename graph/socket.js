@@ -7,7 +7,7 @@ var ets = require('../knx.js').ets
 var con = require('../knx.js').connection
 var server = require('./server.js').server
 
-var test = true;     //true if no knx is availeble
+var test = false;     //true if no knx is availeble
 
 function storePoint(data){
   //ctreate new object and store this in logData array
@@ -343,7 +343,7 @@ console.log('new: ' + newvalue)
 functionTemp.func.on('deltatemp', function(data){
     console.log('deltatemp ontvangen: ' + data.controller)
     console.log( Number(dataPunt.temp))
-
+    if(!test){ets.ext_temp.write(dataPunt.temp);}
     dataPunt.temp = Number(dataPunt.temp) + Number(data.controller);
     dataPunt.time = moment().format(' h:mm:ss ');
     updateGraph(dataPunt)

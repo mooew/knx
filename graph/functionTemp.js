@@ -5,8 +5,8 @@ var dataPunt = require('./data').dataPoint;
 var EventEmitter = require('events').EventEmitter;
 
 var func = new EventEmitter();
-var delayMs = 1000 * 3;   //1 sec
-
+var delayMs = 1000 * 10;   //1 sec
+var cash = dataPunt
 
 
 var delta = {
@@ -21,26 +21,26 @@ var count = 0,
 var timer = new Timer(function() {
 count = count + 1
 console.log(count)
-console.log(dataPunt.pi_cool)
+console.log(cash.pi_cool)
 //console.log('timer executed: ' + dataPunt.pi);
 /////////////////////////HEATING//////////////////////////////
-if(dataPunt.pi_heat > 0){
+if(cash.pi_heat > 0){
 
-delta.controller = (dataPunt.pi_heat/(200));
+delta.controller = (cash.pi_heat/(200));
 
 console.log('temp goes up: ' + delta.controller);
 
 }
-else if(dataPunt.pi_cool > 0 ){
+else if(cash.pi_cool > 0 ){
 
-delta.controller = (dataPunt.pi_cool/(-200));
+delta.controller = (cash.pi_cool/(-200));
 
 console.log('temp goes down: ' + delta.controller);
 
 }else{
   delta.controller = 0;
 }
-
+cash = dataPunt
 ///////////////////////COOLING/////////////////////////////////
 
 

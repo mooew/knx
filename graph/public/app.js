@@ -67,6 +67,8 @@ $(document).ready(function() {
       weatherChartRef.data.datasets[3].data.splice(0,5);
       weatherChartRef.data.datasets[4].data.splice(0,5);
       weatherChartRef.data.datasets[5].data.splice(0,5);
+      weatherChartRef.data.datasets[6].data.splice(0,5);
+      weatherChartRef.data.datasets[7].data.splice(0,5);
 
       weatherChartRef.update();
 
