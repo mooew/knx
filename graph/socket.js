@@ -7,7 +7,7 @@ var ets = require('../knx.js').ets
 var con = require('../knx.js').connection
 var server = require('./server.js').server
 
-var test = false;     //true if no knx is availeble
+var test = true;     //true if no knx is availeble
 
 function storePoint(data){
   //ctreate new object and store this in logData array
