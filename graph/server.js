@@ -1,5 +1,6 @@
 //test
 var express = require('express');
+var cors = require('cors')
 
 var path = require('path');
 var bodyParser = require('body-parser');
@@ -10,6 +11,7 @@ var ets = require('../knx.js').ets
 
 //App setup
 var app = express();
+app.use(cors()) //allow client acces?
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -18,8 +20,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //API//
 app.get('/getTemperature', function(req,res){
-  res.send(logData);
+  res.send(logData.dataPoints);
   console.log('/getTemperature: ')
+  console.log(logData.dataPoints)
 });
 
 //------------------------------------//

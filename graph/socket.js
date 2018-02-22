@@ -51,7 +51,31 @@ function ldexp(mantissa, exponent) {
 
 
 //----used for input fields----//
+    socket.on('hvac-data', function(data){
+      var inp = parseInt(data.inp);
+      var id = parseInt(data.id);
+        switch (id){
+          case 0:
+            temp = parseFloat(data.inp).toFixed(2)
+            console.log('Temp: ' +  temp);
+            if(!test){ets.ext_temp.write(temp);}
 
+            dataPunt.temp = temp;
+            dataPunt.time = moment();
+            updateGraph(dataPunt)
+          break;
+          case 1:
+            console.log('comfort heat: ' + inp);
+            if(!test){
+              ets.comf.write(inp);}
+            if(test){
+              dataPunt.sp = inp;
+              dataPunt.time = moment();
+              updateGraph(dataPunt)
+            }
+          break;
+        }
+    })
 // comfort temperature
 // the graph will be updated via response of KNX
     socket.on('input_sp', function(data){
@@ -73,7 +97,7 @@ function ldexp(mantissa, exponent) {
             ets.comf.write(inp);}
           if(test){
             dataPunt.sp = inp;
-            dataPunt.time = moment().format(' h:mm:ss ');
+            dataPunt.time = moment();
             updateGraph(dataPunt)
             }
           break;
@@ -106,13 +130,14 @@ function ldexp(mantissa, exponent) {
 // ext temperature
 // send to KNX and update graph
 
+
     socket.on('input_temp', function(data){
       temp = parseFloat(data.inp).toFixed(2)
       console.log('sp: ' +  temp);
       if(!test){ets.ext_temp.write(temp);}
 
       dataPunt.temp = temp;
-      dataPunt.time = moment().format(' h:mm:ss ');
+      dataPunt.time = moment();
       updateGraph(dataPunt)
       });
 

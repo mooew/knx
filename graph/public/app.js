@@ -138,7 +138,10 @@ socket.on('updateDOM', function(data){
     function hideEle(elementId){
       document.getElementById(elementId).style.display = 'none';
     }
-
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
     function ajax(url, method, payload, successCallback){
       var xhr = new XMLHttpRequest();
       xhr.open(method, url, true);
@@ -149,6 +152,11 @@ socket.on('updateDOM', function(data){
       };
       xhr.send(JSON.stringify(payload));
     }
+    //////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////
+
 ////////////////////// SCRIPT ///////////////////////////////////:::
 function startScript(){
   console.log('start')
@@ -522,15 +530,15 @@ function startScript(){
     //hideEle("loader");  //hide loading status
     var respData = JSON.parse(response);
     console.log('respData: ' + respData)
-    chartConfig.labels = respData.dataPoints.map(dataPoint => dataPoint.time);
-    chartConfig.datasets[0].data = respData.dataPoints.map(dataPoint => dataPoint.sp);
-    chartConfig.datasets[1].data = respData.dataPoints.map(dataPoint => dataPoint.temp);
-    chartConfig.datasets[2].data = respData.dataPoints.map(dataPoint => dataPoint.pi_heat);
-    chartConfig.datasets[3].data = respData.dataPoints.map(dataPoint => dataPoint.pi_cool);
-    chartConfig.datasets[4].data = respData.dataPoints.map(dataPoint => dataPoint.pi_heat_2);
-    chartConfig.datasets[5].data = respData.dataPoints.map(dataPoint => dataPoint.pi_cool_2);
-    chartConfig.datasets[6].data = respData.dataPoints.map(dataPoint => dataPoint.heat_act);
-    chartConfig.datasets[7].data = respData.dataPoints.map(dataPoint => dataPoint.cool_act);
+    chartConfig.labels = respData.map(dataPoint => dataPoint.time);
+    chartConfig.datasets[0].data = respData.map(dataPoint => dataPoint.sp);
+    chartConfig.datasets[1].data = respData.map(dataPoint => dataPoint.temp);
+    chartConfig.datasets[2].data = respData.map(dataPoint => dataPoint.pi_heat);
+    chartConfig.datasets[3].data = respData.map(dataPoint => dataPoint.pi_cool);
+    chartConfig.datasets[4].data = respData.map(dataPoint => dataPoint.pi_heat_2);
+    chartConfig.datasets[5].data = respData.map(dataPoint => dataPoint.pi_cool_2);
+    chartConfig.datasets[6].data = respData.map(dataPoint => dataPoint.heat_act);
+    chartConfig.datasets[7].data = respData.map(dataPoint => dataPoint.cool_act);
 
 
    renderWeatherChart(chartConfig)
