@@ -7,7 +7,7 @@ var ets = require('../knx.js').ets
 var con = require('../knx.js').connection
 var server = require('./server.js').server
 
-var test = true;     //true if no knx is availeble
+var test = false;     //true if no knx is availeble
 
 function storePoint(data){
   //ctreate new object and store this in logData array
@@ -55,7 +55,7 @@ function ldexp(mantissa, exponent) {
       var inp = parseInt(data.inp);
       var id = parseInt(data.id);
         switch (id){
-          case 0:
+          case 0:   //new temperature
             temp = parseFloat(data.inp).toFixed(2)
             console.log('Temp: ' +  temp);
             if(!test){ets.ext_temp.write(temp);}
@@ -63,8 +63,9 @@ function ldexp(mantissa, exponent) {
             dataPunt.temp = temp;
             dataPunt.time = moment();
             updateGraph(dataPunt)
+            io.emit('updateInpDOM', {inp: dataPunt.temp, id:1})
           break;
-          case 1:
+          case 1:   //new setpoint
             console.log('comfort heat: ' + inp);
             if(!test){
               ets.comf.write(inp);}
@@ -74,8 +75,28 @@ function ldexp(mantissa, exponent) {
               updateGraph(dataPunt)
             }
           break;
+          case 2:   //new SP mode
+          //1 = comf, 2 = stdby, 3 = eco, 4 = protect
+            console.log("SP mode: " + inp)
+            if(!test){ets.mode.write(inp);}
+          break;
+          case 3:   //new thermo mode
+          //0 = OFF, 1 = heat, 2 = cool, 3 = auto
+            console.log("Thermo mode: " + inp)
+            if(!test){ets.hc_mode.write(inp);}
+            //io.emit('updateInpDOM', {inp: inp, id:3})      //test!! thermo mode = id 3
+          break;
         }
     })
+
+
+///////////////////////////////////OLD///////////////////////////////////////////
+///////////////////////////////////OLD///////////////////////////////////////////
+///////////////////////////////////OLD///////////////////////////////////////////
+///////////////////////////////////OLD///////////////////////////////////////////
+///////////////////////////////////OLD///////////////////////////////////////////
+
+
 // comfort temperature
 // the graph will be updated via response of KNX
     socket.on('input_sp', function(data){
@@ -218,19 +239,20 @@ case 2:
   ///////////////////KNX EVENTS//////////////
   ///////////////////////////////////////////
 
-  ///////////////////update DOM////////////////////
+  ///////////////////update Input DOM////////////////////
 
-//hvac mode is updated by knx
+//setpoint mode is updated by knx
 ets.mode_fb.on('change', function (oldvalue, newvalue) {
-      //1 = comf, 2 = stdby, 3 = eco, 4 = protect
-      io.emit('server-hvac-fb', newvalue)
-      });
+    //1 = comf, 2 = stdby, 3 = eco, 4 = protect
+    io.emit('updateInpDOM', {inp: newvalue, id:2})
+});
 
 // heat/cool/auto mode is updated by knx
 ets.hc_mode_fb.on('change', function (oldvalue, newvalue) {
-      //0 = OFF, 1 = heat, 2 = cool, 3 = auto
-      io.emit('server-hc-fb', newvalue)
-      });
+    //0 = OFF, 1 = heat, 2 = cool, 3 = auto
+    io.emit('updateInpDOM', {inp: newvalue, id:3})
+});
+
 
 
   //--------------------setpoints--------------------------//
@@ -239,10 +261,11 @@ ets.act_setpoint.on('change', function (oldvalue, newvalue) {
     console.log("KNX SP: value: %j °C", newvalue);
 
     dataPunt.sp = parseFloat(newvalue).toFixed(2);
-    dataPunt.time = moment().format(' h:mm:ss ')
+    dataPunt.time = moment();
     updateGraph(dataPunt)
 
-    io.emit('updateDOM', dataPunt.sp)
+    //give the sp input an update
+    io.emit('updateInpDOM', {inp: dataPunt.sp, id:1})
     });
 
 
@@ -252,7 +275,7 @@ ets.output_pi_heat.on('change', function (oldvalue, newvalue) {
     console.log("KNX PI: value: %j %", newvalue);
 
     dataPunt.pi_heat = newvalue.toFixed(2);
-    dataPunt.time = moment().format(' h:mm:ss ');
+    dataPunt.time = moment();
     updateGraph(dataPunt)
   });
 
@@ -261,7 +284,7 @@ ets.output_pi_heat_2.on('change', function (oldvalue, newvalue) {
     console.log("KNX PI 2nd stage: value: %j %", newvalue);
 
     dataPunt.pi_heat_2 = newvalue.toFixed(2);
-    dataPunt.time = moment().format(' h:mm:ss ');
+    dataPunt.time = moment();
     updateGraph(dataPunt)
   });
 
@@ -271,7 +294,7 @@ ets.output_pwm_heat.on('change', function (oldvalue, newvalue) {
     console.log("KNX PI: value: %j %", newvalue);
 
     dataPunt.pi_heat = newvalue * 100;
-    dataPunt.time = moment().format(' h:mm:ss ');
+    dataPunt.time = moment();
     updateGraph(dataPunt)
   });
 
@@ -280,7 +303,7 @@ ets.output_pi_cool.on('change', function (oldvalue, newvalue) {
     console.log("KNX PI: value: %j %", newvalue);
 
     dataPunt.pi_cool = newvalue;
-    dataPunt.time = moment().format(' h:mm:ss ');
+    dataPunt.time = moment();
     updateGraph(dataPunt)
   });
 
@@ -289,7 +312,7 @@ ets.output_pi_cool_2.on('change', function (oldvalue, newvalue) {
     console.log("KNX PI 2nd: value: %j %", newvalue);
 
     dataPunt.pi_cool_2 = newvalue;
-    dataPunt.time = moment().format(' h:mm:ss ');
+    dataPunt.time = moment();
     updateGraph(dataPunt)
   });
 
@@ -300,7 +323,7 @@ ets.output_pwm_cool.on('change', function (oldvalue, newvalue) {
     console.log("KNX PI: value: %j %", newvalue);
 
     dataPunt.pi_cool = newvalue * 100;
-    dataPunt.time = moment().format(' h:mm:ss ');
+    dataPunt.time = moment();
     updateGraph(dataPunt)
   });
 
@@ -314,21 +337,21 @@ ets.heat_act.on('change', function (oldvalue, newvalue) {
     if(!newvalue){
       if(newvalue !== oldvalue){
         dataPunt.heat_act = 1;
-        dataPunt.time = moment().format(' h:mm:ss ');
+        dataPunt.time = moment();
         updateGraph(dataPunt)
         dataPunt.heat_act = null;
-        dataPunt.time = moment().add({seconds:0.01}).format(' h:mm:ss ');
+        dataPunt.time = moment().add({seconds:0.01});
         updateGraph(dataPunt)
 
       }else{
         dataPunt.heat_act = null;
-        dataPunt.time = moment().format(' h:mm:ss ');
+        dataPunt.time = moment();
         updateGraph(dataPunt)
       }
 
     }else{
       dataPunt.heat_act = newvalue;
-      dataPunt.time = moment().format(' h:mm:ss ');
+      dataPunt.time = moment();
       updateGraph(dataPunt)
     }
 })
@@ -343,21 +366,21 @@ console.log('new: ' + newvalue)
     if(!newvalue){
       if(newvalue !== oldvalue){
         dataPunt.cool_act = 1;
-        dataPunt.time = moment().format(' h:mm:ss ');
+        dataPunt.time = moment();
         updateGraph(dataPunt)
         dataPunt.cool_act = null;
-        dataPunt.time = moment().add({seconds:0.01}).format(' h:mm:ss ');
+        dataPunt.time = moment().add({seconds:0.01});
         updateGraph(dataPunt)
 
       }else{
         dataPunt.cool_act = null;
-        dataPunt.time = moment().format(' h:mm:ss ');
+        dataPunt.time = moment();
         updateGraph(dataPunt)
       }
 
     }else{
       dataPunt.cool_act = newvalue;
-      dataPunt.time = moment().format(' h:mm:ss ');
+      dataPunt.time = moment();
       updateGraph(dataPunt)
     }
 })
@@ -370,6 +393,6 @@ functionTemp.func.on('deltatemp', function(data){
     console.log( Number(dataPunt.temp))
     if(!test){ets.ext_temp.write(dataPunt.temp);}
     dataPunt.temp = Number(dataPunt.temp) + Number(data.controller);
-    dataPunt.time = moment().format(' h:mm:ss ');
+    dataPunt.time = moment();
     updateGraph(dataPunt)
   });

@@ -1,6 +1,6 @@
 var knx = require('knx');
 
-var test = 1
+var test = 1;
 
 if(test == 0){
 var output_pi_heat = new knx.Datapoint({ga: '0/0/1', dpt: 'DPT5.001'});
@@ -61,8 +61,8 @@ var act_setpoint = new knx.Datapoint({ga: '0/1/11', dpt: 'DPT9.001'});
 var mode_fb = new knx.Datapoint({ga: '0/1/12', dpt: 'DPT20.102'});
 var mode = new knx.Datapoint({ga: '0/1/13', dpt: 'DPT20.102'});
 
-var hc_mode = new knx.Datapoint({ga: '0/1/14', dpt: 'DPT5.001'});
-var hc_mode_fb = new knx.Datapoint({ga: '0/1/15', dpt: 'DPT5.001'});
+var hc_mode = new knx.Datapoint({ga: '0/1/14', dpt: 'DPT5.010'});
+var hc_mode_fb = new knx.Datapoint({ga: '0/1/15', dpt: 'DPT5.010'});
 
 var heat_act= new knx.Datapoint({ga: '0/1/16', dpt: 'DPT1.001'});
 var cool_act= new knx.Datapoint({ga: '0/1/17', dpt: 'DPT1.001'});
@@ -93,7 +93,7 @@ var ets = {
 
 var connection = knx.Connection({
   ipAddr: '10.0.211.39', ipPort: 3671,
-  physAddr: '1.1.8',
+  physAddr: '1.1.128',
   //debug: true,
   handlers: {
     connected: function() {
