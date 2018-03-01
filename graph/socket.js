@@ -7,7 +7,7 @@ var ets = require('../knx.js').ets
 var con = require('../knx.js').connection
 var server = require('./server.js').server
 
-var test = false;     //true if no knx is availeble
+var test = true;     //true if no knx is availeble
 
 function storePoint(data){
   //ctreate new object and store this in logData array
@@ -85,6 +85,15 @@ function ldexp(mantissa, exponent) {
             console.log("Thermo mode: " + inp)
             if(!test){ets.hc_mode.write(inp);}
             //io.emit('updateInpDOM', {inp: inp, id:3})      //test!! thermo mode = id 3
+          break;
+          case 10: //delete all data
+            console.log("delete all graph data");
+
+            data = logData.dataPoints[0];
+            logData.dataPoints.length = 0;
+            //update graph
+
+            updateGraph(data);
           break;
         }
     })

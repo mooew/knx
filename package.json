@@ -1,0 +1,28 @@
+{
+  "name": "knx",
+  "version": "1.0.0",
+  "description": "",
+  "main": "knx.js",
+  "dependencies": {
+    "clockmaker": "^2.0.0",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "knx": "^2.2.8",
+    "moment": "^2.20.1",
+    "socket.io": "^2.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mooew/knx.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mooew/knx/issues"
+  },
+  "homepage": "https://github.com/mooew/knx#readme"
+}
