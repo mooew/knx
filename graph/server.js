@@ -6,6 +6,7 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var dataPunt = require('./data').dataPoint;
 var logData = require('./data').logData;
+var etsGA = require('./ets').ets;
 var ets = require('../knx.js').ets
 
 
@@ -24,6 +25,15 @@ app.get('/getTemperature', function(req,res){
   console.log('/getTemperature: ')
   console.log(logData.dataPoints)
 });
+
+//send and receive ets
+app.get('/getEts', function(req,res){
+  res.send(etsGA);
+  console.log('/getEts: ')
+  console.log(etsGA)
+});
+
+
 
 //------------------------------------//
 //update PI throug http GET request//
