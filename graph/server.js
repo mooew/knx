@@ -18,6 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+//app.use(routes);
 
 //API//
 app.get('/getTemperature', function(req,res){
@@ -26,13 +27,28 @@ app.get('/getTemperature', function(req,res){
   console.log(logData.dataPoints)
 });
 
-//send and receive ets
+//get ets list
 app.get('/getEts', function(req,res){
   res.send(etsGA);
   console.log('/getEts: ')
   console.log(etsGA)
 });
 
+//update ets
+app.post('/getEts', function(req,res){
+  res.send({type:'PUT'});
+  //console.log(req.body)
+  //console.log(etsGA)
+});
+
+//update ets
+app.put('/getEts/:id', function(req,res){
+  //res.send('Update the book')
+  console.log(req.id)
+  //console.log(req.body)
+  etsGA = req.body;
+  console.log(req.body)
+});
 
 
 //------------------------------------//
