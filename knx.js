@@ -1,6 +1,7 @@
 var knx = require('knx');
+var etsGA = require('./graph/ets').ets;
 
-var test = 1
+var test = 1;
 
 if(test == 0){
 var output_pi_heat = new knx.Datapoint({ga: '0/0/1', dpt: 'DPT5.001'});
@@ -36,37 +37,70 @@ var cool_act= new knx.Datapoint({ga: '0/0/17', dpt: 'DPT1.001'});
 
 }else if(test == 1){
 
-var output_pi_heat = new knx.Datapoint({ga: '0/1/1', dpt: 'DPT5.001'});
-var output_pwm_heat = new knx.Datapoint({ga: '0/1/2', dpt: 'DPT1.001'});
+var output_pi_heat = new knx.Datapoint({ga: etsGA[0].ga , dpt: 'DPT5.001'});
+var output_pwm_heat = new knx.Datapoint({ga: etsGA[1].ga, dpt: 'DPT1.001'});
 
 var output_pi_heat_2 = new knx.Datapoint({ga: '0/1/3', dpt: 'DPT5.001'});
 var output_pwm_heat_2 = new knx.Datapoint({ga: '0/1/4', dpt: 'DPT1.001'});
 
-var output_pi_cool = new knx.Datapoint({ga: '0/1/5', dpt: 'DPT5.001'});
-var output_pwm_cool = new knx.Datapoint({ga: '0/1/6', dpt: 'DPT1.001'});
+var output_pi_cool = new knx.Datapoint({ga: etsGA[2].ga, dpt: 'DPT5.001'});
+var output_pwm_cool = new knx.Datapoint({ga: etsGA[3].ga, dpt: 'DPT1.001'});
 
 var output_pi_cool_2 = new knx.Datapoint({ga: '0/1/7', dpt: 'DPT5.001'});
 var output_pwm_cool_2 = new knx.Datapoint({ga: '0/1/8', dpt: 'DPT1.001'});
 
 
-var ext_temp = new knx.Datapoint({ga: '0/1/9', dpt: 'DPT9.001'});
+var ext_temp = new knx.Datapoint({ga: etsGA[4].ga, dpt: 'DPT9.001'});
 
 
-var comf = new knx.Datapoint({ga: '0/1/10', dpt: 'DPT9.001'});
+var comf = new knx.Datapoint({ga: etsGA[5].ga, dpt: 'DPT9.001'});
 
 
 
-var act_setpoint = new knx.Datapoint({ga: '0/1/11', dpt: 'DPT9.001'});
+var act_setpoint = new knx.Datapoint({ga: etsGA[6].ga, dpt: 'DPT9.001'});
 
-var mode_fb = new knx.Datapoint({ga: '0/1/12', dpt: 'DPT20.102'});
-var mode = new knx.Datapoint({ga: '0/1/13', dpt: 'DPT20.102'});
+var mode_fb = new knx.Datapoint({ga: etsGA[7].ga, dpt: 'DPT20.102'});
+var mode = new knx.Datapoint({ga: etsGA[8].ga, dpt: 'DPT20.102'});
 
-var hc_mode = new knx.Datapoint({ga: '0/1/14', dpt: 'DPT5.001'});
-var hc_mode_fb = new knx.Datapoint({ga: '0/1/15', dpt: 'DPT5.001'});
+var hc_mode = new knx.Datapoint({ga: '0/1/14', dpt: 'DPT5.010'});
+var hc_mode_fb = new knx.Datapoint({ga: '0/1/15', dpt: 'DPT5.010'});
 
-var heat_act= new knx.Datapoint({ga: '0/1/16', dpt: 'DPT1.001'});
-var cool_act= new knx.Datapoint({ga: '0/1/17', dpt: 'DPT1.001'});
-}else console.log("please check test parameter")
+var heat_act= new knx.Datapoint({ga: etsGA[9].ga, dpt: 'DPT1.001'});
+var cool_act= new knx.Datapoint({ga: etsGA[10].ga, dpt: 'DPT1.001'});
+}else if(test==2){
+
+  var output_pi_heat = new knx.Datapoint({ga: '0/0/1', dpt: 'DPT5.001'});
+  var output_pwm_heat = new knx.Datapoint({ga: '3/1/8', dpt: 'DPT1.001'});
+
+  var output_pi_heat_2 = new knx.Datapoint({ga: '0/0/3', dpt: 'DPT5.001'});
+  var output_pwm_heat_2 = new knx.Datapoint({ga: '0/0/4', dpt: 'DPT1.001'});
+
+  var output_pi_cool = new knx.Datapoint({ga: '0/0/5', dpt: 'DPT5.001'});
+  var output_pwm_cool = new knx.Datapoint({ga: '3/2/9', dpt: 'DPT1.001'});
+
+  var output_pi_cool_2 = new knx.Datapoint({ga: '0/0/7', dpt: 'DPT5.001'});
+  var output_pwm_cool_2 = new knx.Datapoint({ga: '0/0/8', dpt: 'DPT1.001'});
+
+
+  var ext_temp = new knx.Datapoint({ga: '3/0/0', dpt: 'DPT9.001'});
+
+
+  var comf = new knx.Datapoint({ga: '3/4/2', dpt: 'DPT9.001'});
+
+
+
+  var act_setpoint = new knx.Datapoint({ga: '3/4/0', dpt: 'DPT9.001'});
+
+  var mode_fb = new knx.Datapoint({ga: '3/3/5', dpt: 'DPT20.102'});
+  var mode = new knx.Datapoint({ga: '3/3/4', dpt: 'DPT20.102'});
+
+  var hc_mode = new knx.Datapoint({ga: '0/0/14', dpt: 'DPT5.001'});
+  var hc_mode_fb = new knx.Datapoint({ga: '0/0/15', dpt: 'DPT5.001'});
+
+  var heat_act= new knx.Datapoint({ga: '3/1/6', dpt: 'DPT1.001'});
+  var cool_act= new knx.Datapoint({ga: '3/2/7', dpt: 'DPT1.001'});
+}
+else console.log("please check test parameter")
 
 var ets = {
   output_pi_heat,
@@ -93,7 +127,7 @@ var ets = {
 
 var connection = knx.Connection({
   ipAddr: '10.0.211.39', ipPort: 3671,
-  physAddr: '1.1.8',
+  physAddr: '1.1.128',
   //debug: true,
   handlers: {
     connected: function() {
