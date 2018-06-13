@@ -18,11 +18,11 @@ const Ets = mongoose.model('ets', EtsSchema);
 var ets = [
 
       {name: "output_pi_heat",  ga: "0/1/1"},
-      {name: "output_pwm_heat",  ga: "0/1/2"},
+      {name: "output_pwm_heat",  ga: "3/1/8"},
       {name: "output_pi_cool",  ga: "0/1/5"},
-      {name: "output_pwm_cool",  ga: "0/1/6"},
+      {name: "output_pwm_cool",  ga: "3/2/9"},
       {name: "ext_temp",  ga: "3/0/0"},
-      {name: "comf",  ga: "3/4/2"},
+      {name: "comfort sp",  ga: "3/4/2"},
       {name: 'act_setpoint',  ga: '3/4/0'},
 
       {name: 'mode_fb',  ga: '3/3/5'},

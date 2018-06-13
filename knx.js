@@ -1,39 +1,42 @@
 var knx = require('knx');
 var etsGA = require('./graph/ets').ets;
 
-var test = 1;
+var test = 0;
 
 if(test == 0){
-var output_pi_heat = new knx.Datapoint({ga: '0/0/1', dpt: 'DPT5.001'});
-var output_pwm_heat = new knx.Datapoint({ga: '0/0/2', dpt: 'DPT1.001'});
+  var heat_act= new knx.Datapoint({ga: '0/1/0', dpt: 'DPT1.001'});
+  var cool_act= new knx.Datapoint({ga: '0/1/1', dpt: 'DPT1.001'});
 
-var output_pi_heat_2 = new knx.Datapoint({ga: '0/0/3', dpt: 'DPT5.001'});
-var output_pwm_heat_2 = new knx.Datapoint({ga: '0/0/4', dpt: 'DPT1.001'});
+  var output_pi_heat = new knx.Datapoint({ga: '0/3/3', dpt: 'DPT5.001'});
+  var output_pwm_heat = new knx.Datapoint({ga: '0/1/5', dpt: 'DPT1.001'});
 
-var output_pi_cool = new knx.Datapoint({ga: '0/0/5', dpt: 'DPT5.001'});
-var output_pwm_cool = new knx.Datapoint({ga: '0/0/6', dpt: 'DPT1.001'});
+  var output_pi_heat_2 = new knx.Datapoint({ga: '0/3/3', dpt: 'DPT5.001'});
+  var output_pwm_heat_2 = new knx.Datapoint({ga: '0/3/4', dpt: 'DPT1.001'});
 
-var output_pi_cool_2 = new knx.Datapoint({ga: '0/0/7', dpt: 'DPT5.001'});
-var output_pwm_cool_2 = new knx.Datapoint({ga: '0/0/8', dpt: 'DPT1.001'});
+  var output_pi_cool = new knx.Datapoint({ga: '0/3/4', dpt: 'DPT5.001'});
+  var output_pwm_cool = new knx.Datapoint({ga: '0/1/6', dpt: 'DPT1.001'});
 
-
-var ext_temp = new knx.Datapoint({ga: '0/0/9', dpt: 'DPT9.001'});
-
-
-var comf = new knx.Datapoint({ga: '0/0/10', dpt: 'DPT9.001'});
+  var output_pi_cool_2 = new knx.Datapoint({ga: '0/3/7', dpt: 'DPT5.001'});
+  var output_pwm_cool_2 = new knx.Datapoint({ga: '0/3/8', dpt: 'DPT1.001'});
 
 
+  var ext_temp = new knx.Datapoint({ga: '0/2/0', dpt: 'DPT9.001'});
 
-var act_setpoint = new knx.Datapoint({ga: '0/0/11', dpt: 'DPT9.001'});
 
-var mode_fb = new knx.Datapoint({ga: '0/0/12', dpt: 'DPT20.102'});
-var mode = new knx.Datapoint({ga: '0/0/13', dpt: 'DPT20.102'});
 
-var hc_mode = new knx.Datapoint({ga: '0/0/14', dpt: 'DPT5.001'});
-var hc_mode_fb = new knx.Datapoint({ga: '0/0/15', dpt: 'DPT5.001'});
+  var comf = new knx.Datapoint({ga: '0/0/1', dpt: 'DPT9.001'});
 
-var heat_act= new knx.Datapoint({ga: '0/0/16', dpt: 'DPT1.001'});
-var cool_act= new knx.Datapoint({ga: '0/0/17', dpt: 'DPT1.001'});
+
+
+  var act_setpoint = new knx.Datapoint({ga: '0/0/2', dpt: 'DPT9.001'});
+
+  var mode_fb = new knx.Datapoint({ga: '0/0/3', dpt: 'DPT20.102'});
+  var mode = new knx.Datapoint({ga: '0/0/4', dpt: 'DPT20.102'});
+
+  var hc_mode = new knx.Datapoint({ga: '0/0/6', dpt: 'DPT20.102'});
+  var hc_mode_fb = new knx.Datapoint({ga: '0/0/5', dpt: 'DPT20.102'});
+
+
 
 }else if(test == 1){
 
@@ -124,27 +127,38 @@ var ets = {
   heat_act,
   cool_act}
 
+  function bindToGA(){
+  for (var key in ets){
+  //console.log(ets)
+  var obj = ets[key];
+  obj.bind(connection)
+  console.log("bind to GA")
+}
+}
 
 var connection = knx.Connection({
-  ipAddr: '10.0.211.39', ipPort: 3671,
-  physAddr: '1.1.128',
+  ipAddr: '10.0.212.145', ipPort: 3671,
+  physAddr: '1.1.129',
   //debug: true,
   handlers: {
     connected: function() {
       console.log('Connected to KNX!');
-
+        bindToGA();
+        /*
       for (var key in ets){
         //console.log(ets)
         var obj = ets[key];
         obj.bind(connection)
       }
+      */
 
     },
     // display telegrams on th eknx bus
+
     event: function (evt, src, dest, value) {
-      console.log("%s **** KNX EVENT: %j, src: %j, dest: %j, value: %j",
-      new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
-          evt, src, dest, value);
+//      console.log("%s **** KNX EVENT: %j, src: %j, dest: %j, value: %j",
+//      new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
+//          evt, src, dest, value);
 
     },
     // get notified on connection errors
@@ -155,6 +169,6 @@ var connection = knx.Connection({
 });
 
 
-
+  module.exports.bindToGA = bindToGA
   module.exports.ets = ets
   module.exports.connection = connection

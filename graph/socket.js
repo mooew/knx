@@ -11,9 +11,9 @@ var test = false;     //true if no knx is availeble
 
 function storePoint(data){
   //ctreate new object and store this in logData array
-  console.log(data)
+  //console.log(data)
   var help = new Object()
-  help.time = data.time
+  help.time = data.time             //issue undefined
   help.temp = data.temp
 
   help.pi_heat = data.pi_heat
@@ -81,7 +81,7 @@ function ldexp(mantissa, exponent) {
             if(!test){ets.mode.write(inp);}
           break;
           case 3:   //new thermo mode
-          //0 = OFF, 1 = heat, 2 = cool, 3 = auto
+          //0 = auto, 1 = coolOnly, 2 = heatOnl
             console.log("Thermo mode: " + inp)
             if(!test){ets.hc_mode.write(inp);}
             //io.emit('updateInpDOM', {inp: inp, id:3})      //test!! thermo mode = id 3
@@ -92,7 +92,7 @@ function ldexp(mantissa, exponent) {
             data = logData.dataPoints[0];
             logData.dataPoints.length = 0;
             //update graph
-
+            data.time = moment();
             updateGraph(data);
           break;
         }
@@ -254,12 +254,14 @@ case 2:
 ets.mode_fb.on('change', function (oldvalue, newvalue) {
     //1 = comf, 2 = stdby, 3 = eco, 4 = protect
     io.emit('updateInpDOM', {inp: newvalue, id:2})
+    console.log("TEMP MODE changed to " + newvalue)
 });
 
 // heat/cool/auto mode is updated by knx
 ets.hc_mode_fb.on('change', function (oldvalue, newvalue) {
-    //0 = OFF, 1 = heat, 2 = cool, 3 = auto
+    //0 = auto, 1 = coolOnly, 2 = heatOnly
     io.emit('updateInpDOM', {inp: newvalue, id:3})
+    console.log("HVAC MODE changed to " + newvalue)
 });
 
 
@@ -300,7 +302,7 @@ ets.output_pi_heat_2.on('change', function (oldvalue, newvalue) {
 //PWM HEAT//
 ets.output_pwm_heat.on('change', function (oldvalue, newvalue) {
     newvalue = newvalue ? 1 : 0;
-    console.log("KNX PI: value: %j %", newvalue);
+    console.log("KNX PWM: value: %j", newvalue);
 
     dataPunt.pi_heat = newvalue * 100;
     dataPunt.time = moment();
@@ -329,7 +331,7 @@ ets.output_pi_cool_2.on('change', function (oldvalue, newvalue) {
 //PWM COOL//
 ets.output_pwm_cool.on('change', function (oldvalue, newvalue) {
     newvalue = newvalue ? 1 : 0;
-    console.log("KNX PI: value: %j %", newvalue);
+    console.log("KNX PWM: value: %j", newvalue);
 
     dataPunt.pi_cool = newvalue * 100;
     dataPunt.time = moment();

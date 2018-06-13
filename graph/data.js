@@ -12,7 +12,6 @@ var dataPoint = {
 
   time: time,
   sp: sp,
-
   temp: temp,
   pi_heat: pi_heat,
   pi_cool: pi_cool,
@@ -20,7 +19,7 @@ var dataPoint = {
   pi_cool_2: pi_cool_2,
   heat_act: heat_act,
   cool_act: cool_act
-  
+
 }
 
 var logData = {

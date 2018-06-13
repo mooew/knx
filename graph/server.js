@@ -8,7 +8,9 @@ var dataPunt = require('./data').dataPoint;
 var logData = require('./data').logData;
 var etsGA = require('./ets').ets;
 var ets = require('../knx.js').ets
+var con = require('../knx.js').connection
 
+var test = require('../knx.js').bindToGA
 
 //App setup
 var app = express();
@@ -48,6 +50,9 @@ app.put('/getEts/:id', function(req,res){
   //console.log(req.body)
   etsGA = req.body;
   console.log(req.body)
+
+  //restart knx
+  test.bindToGA();
 });
 
 
