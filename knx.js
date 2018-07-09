@@ -4,37 +4,48 @@ var etsGA = require('./graph/ets').ets;
 var test = 0;
 
 if(test == 0){
-  var heat_act= new knx.Datapoint({ga: '0/1/0', dpt: 'DPT1.001'});
-  var cool_act= new knx.Datapoint({ga: '0/1/1', dpt: 'DPT1.001'});
+  var heat_act= new knx.Datapoint({ga: '20/6/19', dpt: 'DPT1.001'});
+  var cool_act= new knx.Datapoint({ga: '20/6/21', dpt: 'DPT1.001'});
 
-  var output_pi_heat = new knx.Datapoint({ga: '0/3/3', dpt: 'DPT5.001'});
-  var output_pwm_heat = new knx.Datapoint({ga: '0/1/5', dpt: 'DPT1.001'});
+  var output_pi_heat = new knx.Datapoint({ga: '20/6/25', dpt: 'DPT5.001'});
+  var output_pwm_heat = new knx.Datapoint({ga: '20/6/23', dpt: 'DPT1.001'});
 
-  var output_pi_heat_2 = new knx.Datapoint({ga: '0/3/3', dpt: 'DPT5.001'});
-  var output_pwm_heat_2 = new knx.Datapoint({ga: '0/3/4', dpt: 'DPT1.001'});
+  var output_pi_heat_2 = new knx.Datapoint({ga: '20/6/28', dpt: 'DPT5.001'});
+  var output_pwm_heat_2 = new knx.Datapoint({ga: '20/6/26', dpt: 'DPT1.001'});
 
-  var output_pi_cool = new knx.Datapoint({ga: '0/3/4', dpt: 'DPT5.001'});
-  var output_pwm_cool = new knx.Datapoint({ga: '0/1/6', dpt: 'DPT1.001'});
+  var output_pi_cool = new knx.Datapoint({ga: '20/6/32', dpt: 'DPT5.001'});
+  var output_pwm_cool = new knx.Datapoint({ga: '20/6/30', dpt: 'DPT1.001'});
 
-  var output_pi_cool_2 = new knx.Datapoint({ga: '0/3/7', dpt: 'DPT5.001'});
-  var output_pwm_cool_2 = new knx.Datapoint({ga: '0/3/8', dpt: 'DPT1.001'});
-
-
-  var ext_temp = new knx.Datapoint({ga: '0/2/0', dpt: 'DPT9.001'});
+  var output_pi_cool_2 = new knx.Datapoint({ga: '20/6/35', dpt: 'DPT5.001'});
+  var output_pwm_cool_2 = new knx.Datapoint({ga: '20/6/33', dpt: 'DPT1.001'});
 
 
-
-  var comf = new knx.Datapoint({ga: '0/0/1', dpt: 'DPT9.001'});
+  var ext_temp = new knx.Datapoint({ga: '20/2/1', dpt: 'DPT9.001'});
 
 
 
-  var act_setpoint = new knx.Datapoint({ga: '0/0/2', dpt: 'DPT9.001'});
+  var comf = new knx.Datapoint({ga: '20/4/3', dpt: 'DPT9.001'});
 
-  var mode_fb = new knx.Datapoint({ga: '0/0/3', dpt: 'DPT20.102'});
-  var mode = new knx.Datapoint({ga: '0/0/4', dpt: 'DPT20.102'});
 
-  var hc_mode = new knx.Datapoint({ga: '0/0/6', dpt: 'DPT20.102'});
-  var hc_mode_fb = new knx.Datapoint({ga: '0/0/5', dpt: 'DPT20.102'});
+
+  var act_setpoint = new knx.Datapoint({ga: '20/4/10', dpt: 'DPT9.001'});
+
+  var mode = new knx.Datapoint({ga: '20/5/4', dpt: 'DPT20.102'});
+  var mode_fb = new knx.Datapoint({ga: '20/5/9', dpt: 'DPT20.102'});
+
+  var hc_mode = new knx.Datapoint({ga: '20/5/14', dpt: 'DPT20.102'});
+  var hc_mode_fb = new knx.Datapoint({ga: '20/5/15', dpt: 'DPT20.102'});
+
+  var onoff= new knx.Datapoint({ga: '20/5/2', dpt: 'DPT1.001'});
+  var onoff_fb = new knx.Datapoint({ga: '20/5/3', dpt: 'DPT1.001'});
+
+  var windowStatus = new knx.Datapoint({ga: '20/5/1', dpt: 'DPT1.001'});
+
+  var presenceStatus = new knx.Datapoint({ga: '20/5/0', dpt: 'DPT1.001'});
+
+  var roomTemp = new knx.Datapoint({ga: '20/2/3', dpt: 'DPT9.001'});
+
+//  var debug1 = new knx.Datapoint({ga: '20/0/5', dpt: 'DPT5.010'});
 
 
 
@@ -102,6 +113,8 @@ var cool_act= new knx.Datapoint({ga: etsGA[10].ga, dpt: 'DPT1.001'});
 
   var heat_act= new knx.Datapoint({ga: '3/1/6', dpt: 'DPT1.001'});
   var cool_act= new knx.Datapoint({ga: '3/2/7', dpt: 'DPT1.001'});
+
+
 }
 else console.log("please check test parameter")
 
@@ -125,7 +138,13 @@ var ets = {
   hc_mode_fb,
 
   heat_act,
-  cool_act}
+  cool_act,
+  onoff,
+  onoff_fb,
+  windowStatus,
+  presenceStatus,
+  roomTemp
+  }
 
   function bindToGA(){
   for (var key in ets){

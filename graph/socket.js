@@ -63,7 +63,7 @@ function ldexp(mantissa, exponent) {
             dataPunt.temp = temp;
             dataPunt.time = moment();
             updateGraph(dataPunt)
-            io.emit('updateInpDOM', {inp: dataPunt.temp, id:1})
+            io.emit('updateInpDOM', {inp: dataPunt.temp, id:0})
           break;
           case 1:   //new setpoint
             console.log('comfort heat: ' + inp);
@@ -86,6 +86,23 @@ function ldexp(mantissa, exponent) {
             if(!test){ets.hc_mode.write(inp);}
             //io.emit('updateInpDOM', {inp: inp, id:3})      //test!! thermo mode = id 3
           break;
+          case 4:   //new on/off mode
+          //0 = off, 1 = on
+            console.log("on/off mode: " + inp)
+            if(!test){ets.onoff.write(inp);}
+            //io.emit('updateInpDOM', {inp: inp, id:3})      //test!! thermo mode = id 3
+          break;
+          case 5:   //new on/off mode
+          //0 = off, 1 = on
+            console.log("window status: " + inp)
+            if(!test){ets.windowStatus.write(inp);}
+          break;
+          case 6:   //new on/off mode
+          //0 = off, 1 = on
+            console.log("presence status: " + inp)
+            if(!test){ets.presenceStatus.write(inp);}
+          break;
+
           case 10: //delete all data
             console.log("delete all graph data");
 
@@ -264,6 +281,13 @@ ets.hc_mode_fb.on('change', function (oldvalue, newvalue) {
     console.log("HVAC MODE changed to " + newvalue)
 });
 
+// on/off mode is updated by knx
+ets.onoff_fb.on('change', function (oldvalue, newvalue) {
+    //0 = auto, 1 = coolOnly, 2 = heatOnly
+    io.emit('updateInpDOM', {inp: newvalue, id:4})
+    console.log("on/off MODE changed to " + newvalue)
+});
+
 
 
   //--------------------setpoints--------------------------//
@@ -278,6 +302,19 @@ ets.act_setpoint.on('change', function (oldvalue, newvalue) {
     //give the sp input an update
     io.emit('updateInpDOM', {inp: dataPunt.sp, id:1})
     });
+
+    //--------------------room temp--------------------------//
+
+  ets.roomTemp.on('change', function (oldvalue, newvalue) {
+      console.log("KNX temp: value: %j °C", newvalue);
+
+      dataPunt.temp = parseFloat(newvalue).toFixed(2);
+      dataPunt.time = moment();
+      updateGraph(dataPunt)
+
+      //give the sp input an update
+      io.emit('updateInpDOM', {inp: dataPunt.temp, id:0})
+      });
 
 
   //----------------listen to KNX for PI or PWM ---------------------//
