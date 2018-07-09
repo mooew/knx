@@ -7,6 +7,8 @@ var EventEmitter = require('events').EventEmitter;
 var func = new EventEmitter();
 var delayMs = 1000 * 10;   //1 sec
 var cash = dataPunt
+var hh = dataPunt.pi_heat;
+var cc = dataPunt.pi_cool;
 
 
 var delta = {
@@ -26,21 +28,28 @@ console.log(cash.pi_cool)
 /////////////////////////HEATING//////////////////////////////
 if(cash.pi_heat > 0){
 
-delta.controller = (cash.pi_heat/(200));
+delta.controller = (hh/(200));
 
 console.log('temp goes up: ' + delta.controller);
 
 }
 else if(cash.pi_cool > 0 ){
 
-delta.controller = (cash.pi_cool/(-200));
+delta.controller = (cc/(-200));
 
 console.log('temp goes down: ' + delta.controller);
 
 }else{
   delta.controller = 0;
 }
-cash = dataPunt
+
+if(count%20 == 0){     //every 20 steps
+  cash = dataPunt
+  hh = dataPunt.pi_heat;
+  cc = dataPunt.pi_cool;
+  console.log('step 5')
+}
+
 ///////////////////////COOLING/////////////////////////////////
 
 
